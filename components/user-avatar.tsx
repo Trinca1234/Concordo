@@ -6,7 +6,7 @@ interface UserAvatarProps{
     className?: String;
 };
 
-export const UseAvatar = ({
+export const UserAvatar = ({
     src,
     className,
 }: UserAvatarProps)=>{
