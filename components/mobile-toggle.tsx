@@ -21,7 +21,7 @@ export const MobileTogle = ({
                     <Menu/>
                 </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="p-0 flex fap-0">
+            <SheetContent side="left" className="p-0 flex gap-0">
                 <div className="w-[72px]">
                     <NavigationSidebar/>
                 </div>
