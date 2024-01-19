@@ -36,8 +36,6 @@ export default function RootLayout({
               <ModalProvider/>
               {children}
             </SocketProvider>
-            <ModalProvider/>
-            {children}
           </ThemeProvider>
         </body>
       </html>

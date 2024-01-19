@@ -9,7 +9,7 @@ import{
 import{ io as ClientIO } from "socket.io-client";
 
 
-type SocketContextType= {
+type SocketContextType = {
     socket: any | null;
     isConnected: boolean;
 };
@@ -44,6 +44,8 @@ export const SocketProvider = ({
         socketInstance.on("disconnect", () =>{
             setIsConnected(false);
         });
+
+        setSocket(socketInstance);
 
         return () =>{
             socketInstance.disconnect();
