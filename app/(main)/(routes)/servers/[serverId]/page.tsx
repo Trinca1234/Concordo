@@ -25,6 +25,7 @@ const ServerIdPage = async ({
             members:{
                 some:{
                     profileId: profile.id,
+                    status: true
                 }
             }
         },

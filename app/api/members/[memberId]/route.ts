@@ -28,16 +28,25 @@ export async function DELETE(
             where: {
                 id: serverId,
                 profileId: profile.id,
+                members: {
+                    some: {
+                        profileId: profile.id,
+                        status: true,
+                    },
+                },
             },
             data: {
-                members:{
-                    deleteMany:{
-                        id: params.memberId,
-                        profileId:{
-                            not: profile.id,
-                        }
-                    }
-                }
+                members: {
+                  updateMany: {
+                    data: {
+                      status: false,
+                    },
+                    where: {
+                      profileId: profile.id,
+                      status: true,
+                    },
+                  },
+                },
             },
             include:{
                 members:{

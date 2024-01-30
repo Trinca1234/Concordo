@@ -32,6 +32,7 @@ export async function DELETE(
                 members:{
                     some:{
                         profileId: profile.id,
+                        status: true,
                         role:{
                             in: [MemberRole.ADMIN, MemberRole.MODERATOR],
                         }
@@ -91,6 +92,7 @@ export async function PATCH(
                 members:{
                     some:{
                         profileId: profile.id,
+                        status: true,
                         role:{
                             in: [MemberRole.ADMIN, MemberRole.MODERATOR],
                         }

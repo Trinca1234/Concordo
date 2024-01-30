@@ -28,7 +28,8 @@ const InviteCodePage = async ({
             inviteCode: params.inviteCode,
             members: {
                 some: {
-                    profileId: profile.id
+                    profileId: profile.id,
+                    status: true,
                 }
             }
         }
@@ -46,6 +47,7 @@ const InviteCodePage = async ({
             members: {
                 create: {
                     profileId: profile.id,
+                    status: true
                 },
             },
         },

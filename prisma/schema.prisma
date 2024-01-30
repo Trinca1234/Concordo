@@ -53,6 +53,8 @@ enum MemberRole {
 model Member {
   id String @id @default(uuid())
   role MemberRole @default(GUEST)
+  
+  status Boolean @default(true)
 
   profileId String
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)

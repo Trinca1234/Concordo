@@ -31,6 +31,7 @@ export async function POST(
                 members: {
                     some: {
                         profileId: profile.id,
+                        status: true,
                         role: {
                             in: [MemberRole.ADMIN, MemberRole.MODERATOR]
                         }
