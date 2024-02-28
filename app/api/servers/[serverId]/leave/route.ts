@@ -1,8 +1,10 @@
+// ELEMINAR
+
 import { currentProfile } from "@/lib/current-profile";
-import { db } from "@/lib/db";
+import axios from "axios";
 import { NextResponse } from "next/server";
 
-export async function PATCH(
+export async function GET(
     req: Request,
     { params }: { params: { serverId: string } }
   ) {
@@ -16,8 +18,10 @@ export async function PATCH(
       if (!params.serverId) {
         return new NextResponse("Server Id missing", { status: 400 });
       }
+
+      const server = await axios.patch(`http://localhost:80/api/leave-server.php?server_id=${params.serverId}&id=${profile.id}`);
   
-      const server = await db.server.update({
+      /* const server = await db.server.update({
         where: {
           id: params.serverId,
           profileId: {
@@ -43,7 +47,7 @@ export async function PATCH(
             },
           },
         },
-      });
+      }); */
   
       return NextResponse.json(server);
     } catch (error) {

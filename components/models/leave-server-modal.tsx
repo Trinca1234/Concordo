@@ -15,9 +15,12 @@ import { useModal } from "@/hooks/use-modal-store";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { currentProfile } from "@/lib/current-profile";
 
 
 export const LeaveServerModal = () => {
+    //const profile = currentProfile();
+
     const router = useRouter();
     const {isOpen, onClose, type, data } = useModal();
 
@@ -30,7 +33,13 @@ export const LeaveServerModal = () => {
         try{
             setIsLoading(true);
 
-            await axios.patch(`/api/servers/${server?.id}/leave`);
+            //await axios.patch(`http://localhost:80/api/leave-server.php?server_id=${server?.id}&id=${profile}`);
+            //await axios.get(`/api/servers/${server?.id}/leave`);
+
+            const response = await axios.get("/api/current-profile");
+            const { id } = response.data;
+
+            await axios.patch(`http://localhost:80/api/servers/leave-server.php?server_id=${server?.id}&id=${id}`); 
             
             onClose();
             router.refresh();

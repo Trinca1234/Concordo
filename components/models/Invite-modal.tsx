@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy, RefreshCw } from "lucide-react";
+import {v4 as uuidv4} from "uuid";
 
 import {
     Dialog,
@@ -43,12 +44,21 @@ export const InviteModal = () => {
     const onNew = async () =>{
         try{
             setIsLoading(true);
-            const response = await axios.patch(`/api/servers/${server?.id}/invite-code`);
+
+            const respons = await axios.get("/api/current-profile");
+            const { id } = respons.data;
+
+            const invitecode = uuidv4();
+
+            const response = await axios.patch(`http://localhost:80/api/servers/invite-server.php?serverId=${server?.id}&profileId=${id}&invitecode=${invitecode}`) 
+
+            console.log(response);
+            //const response = await axios.patch(`/api/servers/${server?.id}/invite-code`);
 
             onOpen("invite", {server: response.data});
         }catch(error){
             console.log(error);
-        }finally{
+        }finally{ 
             setIsLoading(false);
         }
     }

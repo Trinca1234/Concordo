@@ -1,3 +1,5 @@
+//ELEMINAR
+
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { MemberRole } from "@prisma/client";
@@ -27,9 +29,9 @@ export async function POST(
 
         const server = await db.server.update({
             where:{
-                id: serverId,
+                id: serverId,   
                 members: {
-                    some: {
+                    some: { 
                         profileId: profile.id,
                         status: true,
                         role: {

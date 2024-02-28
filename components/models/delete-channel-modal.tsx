@@ -31,14 +31,19 @@ export const DeleteChannelModal = () => {
         try{
             setIsLoading(true);
 
-            const url =  qs.stringifyUrl({
+            /* const url =  qs.stringifyUrl({
                 url:`/api/channels/${channel?.id}`,
                 query:{
                     serverId: server?.id
                 }
             })
 
-            await axios.delete(url);
+            await axios.delete(url); */
+
+            const response = await axios.get("/api/current-profile");
+            const { id } = response.data;
+
+            await axios.delete(`http://localhost:80/api/channels/delete-channel.php?profileId=${id}&serverId=${server?.id}&channelId=${channel?.id}`);
 
             onClose();
             router.refresh();

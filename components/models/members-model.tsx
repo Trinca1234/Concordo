@@ -51,15 +51,19 @@ export const MembersModal = () => {
 
     const onKick = async (memberId: string) =>{
         try{
-            setLoadingId(memberId);
+            /* setLoadingId(memberId);
             const url = qs.stringifyUrl({
                 url: `/api/members/${memberId}`,
-                query:{
+                query:{ 
                     serverId: server?.id,
                 },
             });
 
-            const response = await axios.delete(url);
+            const response = await axios.delete(url); */
+
+            const response = await axios.patch(`http://localhost:80/api/members/kick-member.php?serverId=${server?.id}&memberId=${memberId}`); 
+
+            console.log(response);
 
             router.refresh();
             onOpen("members", { server: response.data });
@@ -73,7 +77,6 @@ export const MembersModal = () => {
 
     const onRoleChange = async (memberId: string, role: MemberRole) =>{
         try{
-            setLoadingId(memberId);
             const url = qs.stringifyUrl({
                 url: `/api/members/${memberId}`,
                 query: {
@@ -82,6 +85,14 @@ export const MembersModal = () => {
             });
 
             const response = await axios.patch(url, {role});
+            
+            setLoadingId(memberId); 
+            /* const respons = await axios.get("/api/current-profile");
+            const { id } = respons.data;
+
+            const response = await axios.patch(`http://localhost:80/api/members/role-member.php?serverId=${server?.id}&memberId=${memberId}&role=${role}&profileId=${id}`); 
+ */
+            console.log(response.data);
 
             router.refresh();
             onOpen("members", {server: response.data})
@@ -108,14 +119,14 @@ export const MembersModal = () => {
                 <ScrollArea className="mt-8 max-h-[420px] pr-6">
                     {server?.members?.map((member)=>(
                         <div key={member.id} className="flex items-center gap-x-2 mb-6" >
-                            <UserAvatar src={member.profile.imageUrl} />
+                            <UserAvatar src={member.profile?.imageUrl} />
                             <div className="flex flex-col gap-y-1">
                                 <div className="text-xs font-semibold flex items-center gap-x-1">
-                                    {member.profile.name}
+                                    {member.profile?.name}
                                     {roleIconMap[member.role]}
                                 </div>
                                 <p className="text-xs text-zinc-500">
-                                    {member.profile.email}
+                                    {member.profile?.email}
                                 </p>
                             </div>
                             {server.profileId !== member.profileId && loadingId !== member.id &&(

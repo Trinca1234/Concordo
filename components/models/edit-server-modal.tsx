@@ -66,7 +66,13 @@ export const EditServerModal = () => {
 
     const onSubmit = async(values: z.infer<typeof formSchema>)=>{
         try{
-            await axios.patch(`/api/server/${server?.id}`, values);
+
+            const response = await axios.get("/api/current-profile");
+            const { id } = response.data;
+
+            await axios.patch(`http://localhost:80/api/servers/edit-server.php?serverId=${server?.id}&name=${values.name}&imageUrl=${values.imageUrl}&profile=${id}`);
+
+            //await axios.patch(`/api/server/${server?.id}`, values);
             
             form.reset();
             router.refresh();

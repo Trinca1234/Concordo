@@ -30,7 +30,12 @@ export const DeleteServerModal = () => {
         try{
             setIsLoading(true);
 
-            await axios.delete(`/api/servers/${server?.id}`);
+            const response = await axios.get("/api/current-profile");
+            const { id } = response.data;
+
+            await axios.delete(`http://localhost:80/api/servers/delete-server.php?serverId=${server?.id}&profileId=${id}`);
+
+            //await axios.delete(`/api/servers/${server?.id}`);
 
             onClose();
             router.refresh();

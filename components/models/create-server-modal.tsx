@@ -5,6 +5,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import {v4 as uuidv4} from "uuid";
 
 
 import {
@@ -57,7 +58,16 @@ export const CreateServerModal = () => {
 
     const onSubmit = async(values: z.infer<typeof formSchema>)=>{
         try{
-            await axios.post("/api/servers", values);
+            console.log(values);
+            const response = await axios.get("/api/current-profile");
+            const inviteCode = uuidv4();
+            const serverId = uuidv4();
+            const channelId = uuidv4();
+            const memberId = uuidv4();
+            const { id } = response.data;
+            console.log(id);
+            await axios.post(`http://localhost:80/api/servers/create-server.php?name=${values.name}&imageUrl=${values.imageUrl}&profileId=${id}&inviteCode=${inviteCode}&serverId=${serverId}&channelId=${channelId}&memberId=${memberId}`)
+            //await axios.post("/api/servers", values);
             form.reset();
             router.refresh();
             onClose();

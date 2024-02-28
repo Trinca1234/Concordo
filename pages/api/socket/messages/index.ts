@@ -1,6 +1,7 @@
 import { currentProfilePages } from "@/lib/current-profile-pages";
 import { db } from "@/lib/db";
 import { NextApiResponseServerIo } from "@/types";
+import axios from "axios";
 import { NextApiRequest } from "next";
 
 export default async function handler(
@@ -11,6 +12,7 @@ export default async function handler(
         return res.status(405).json({error: "Method not allowed"});
     }
     try{
+        console.log("entrou");
         const profile = await currentProfilePages(req);
         const { content, fileUrl }= req.body;
         const { serverId, channelId } = req.query;
@@ -65,6 +67,7 @@ export default async function handler(
         if(!member){
             return res.status(404).json({error: "Member not found"});
         }
+        console.log("entrou");
 
         const message = await db.message.create({
             data:{
@@ -82,6 +85,8 @@ export default async function handler(
             }
         });
 
+        //const message = await axios.post(`http://localhost:80/api/messages/create-message.php?content=${content}&fileUrl=${fileUrl}&channelId=${channelId}&memberId=${member.id}`);
+ 
         const channelKey = `chat:${channelId}:messages`;
 
         res?.socket?.server?.io?.emit(channelKey, message);

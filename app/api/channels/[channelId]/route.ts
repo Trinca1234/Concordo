@@ -1,3 +1,5 @@
+//ELEMINAR
+
 import { currentProfile } from "@/lib/current-profile";
 
 import { NextResponse } from "next/server";

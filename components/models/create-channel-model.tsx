@@ -6,6 +6,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import {v4 as uuidv4} from "uuid";
 
 
 import {
@@ -78,13 +79,20 @@ export const CreateChannelModal = () => {
 
     const onSubmit = async(values: z.infer<typeof formSchema>)=>{
         try{
-            const url = qs.stringifyUrl({
+             /* const url = qs.stringifyUrl({
                 url:"/api/channels",
-                query: {
+                query: { 
                     serverId: params?.serverId
                 }
             });
-            await axios.post(url, values);
+            await axios.post(url, values); */ 
+
+            const response = await axios.get("/api/current-profile");
+            const { id } = response.data;
+
+            const channeId = uuidv4();
+
+            await axios.post(`http://localhost:80/api/channels/create-channel.php?serverId=${params?.serverId}&name=${values.name}&type=${values.type}&profile=${id}&channelId=${channeId}`);
             form.reset();
             router.refresh();
             onClose();

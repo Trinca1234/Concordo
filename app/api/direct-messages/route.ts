@@ -80,4 +80,4 @@ export async function GET(
         console.log("[DIRECT_MESSAGES_GET]", error);
         return new NextResponse("Internal Error", {status: 500});
     }
-}
+} 
