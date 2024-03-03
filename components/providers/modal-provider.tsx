@@ -24,7 +24,7 @@ export const ModalProvider = () =>{
     if(!isMounted){
         return null;
     }
-
+ 
     return(
         <>
             <CreateServerModal/>
