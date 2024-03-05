@@ -17,7 +17,7 @@ export const NavigationDm= () =>{
             <ActionTooltip
                 side="right"
                 align="center"
-                label="Add a server"
+                label="Direct Message"
             >
                 <button 
                     onClick={onClick}
