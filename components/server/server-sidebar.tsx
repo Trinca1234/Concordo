@@ -33,7 +33,7 @@ export const ServerSidebar = async ({
     serverId
 }: ServerSidebarProps) =>{
     const profile = await currentProfile();
-
+ 
     if(!profile){
         return redirect("/");
     }
@@ -181,7 +181,7 @@ export const ServerSidebar = async ({
                             ))}
                         </div>
                     </div>
-                )}
+                )} 
                 {!!members?.length &&(
                     <div className="mb-2">
                         <ServerSection
@@ -191,12 +191,14 @@ export const ServerSidebar = async ({
                         server={server}
                         />
                         <div className="space-y-[2px}">
-                            {members.map((member)=>(
-                                <ServerMember 
-                                key={member.id}
-                                member={member}
-                                server={server}
-                                />
+                            {members.map((member) => (
+                                member.status && member.status === true && (
+                                    <ServerMember 
+                                        key={member.id}
+                                        member={member}
+                                        server={server}
+                                    />
+                                )
                             ))}
                         </div>
                     </div>

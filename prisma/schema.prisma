@@ -1,13 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
@@ -18,30 +15,17 @@ model Profile {
   imageUrl String @db.Text
   email String @db.Text
 
-  directMessages DirectMessage[]
   servers Server[]
   members Member[]
   channels Channel[]
+  
+  conversationsInitiated Conversation[] @relation("ProfileOne")
+  conversationsReceived Conversation[] @relation("ProfileTwo")
 
-  requestSended Request[] @relation("UserOne")
-  requestReceived Request[] @relation("UserTwo")
+  directMessages DirectMessage[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model Request {
-  id String @id @default(uuid())
-
-  userOneId String
-  userOne Profile @relation("UserOne", fields: [userOneId], references: [id], onDelete: Cascade)
-
-  userTwoId String
-  userTwo Profile @relation("UserTwo", fields: [userTwoId], references: [id], onDelete: Cascade)
-
-  @@index([userTwoId])
-
-  @@unique([userOneId, userTwoId])
 }
 
 model Server {
@@ -71,7 +55,7 @@ enum MemberRole {
 model Member {
   id String @id @default(uuid())
   role MemberRole @default(GUEST)
-  
+
   status Boolean @default(true)
 
   profileId String
@@ -81,9 +65,6 @@ model Member {
   server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
   messages Message[]
-
-  conversationsInitiated Conversation[] @relation("UserOne")
-  conversationsReceived Conversation[] @relation("UserTwo")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -142,17 +123,17 @@ model Message {
 model Conversation {
   id String @id @default(uuid())
 
-  userOneId String
-  memberOne Member @relation("UserOne", fields: [userOneId], references: [id], onDelete: Cascade)
+  profileOneId String
+  profileOne Profile @relation("ProfileOne", fields: [profileOneId], references: [id], onDelete: Cascade)
 
-  userTwoId String
-  memberTwo Member @relation("UserTwo", fields: [userTwoId], references: [id], onDelete: Cascade)
+  profileTwoId String
+  profileTwo Profile @relation("ProfileTwo", fields: [profileTwoId], references: [id], onDelete: Cascade)
 
   directMessages DirectMessage[]
 
-  @@index([userTwoId])
+  @@index([profileTwoId])
 
-  @@unique([userOneId, userTwoId])
+  @@unique([profileOneId, profileTwoId])
 }
 
 model DirectMessage {
@@ -160,8 +141,8 @@ model DirectMessage {
   content String @db.Text
   fileUrl String? @db.Text
 
-  userId String
-  user Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   conversationId String
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
@@ -171,6 +152,6 @@ model DirectMessage {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([userId])
+  @@index([profileId])
   @@index([conversationId])
 }

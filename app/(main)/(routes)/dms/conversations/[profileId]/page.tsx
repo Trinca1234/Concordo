@@ -10,8 +10,7 @@ import { redirect } from "next/navigation";
 
 interface MemberIdPageProps{
     params: {
-        memberId: string;
-        serverId: string;
+        profileId: string;
     },
     searchParams: {
       video?:boolean,
@@ -28,7 +27,7 @@ const MemberIdPage = async ({
       return redirectToSignIn();
     }
   
-    const currentMember = await db.member.findFirst({
+    /* const currentMember = await db.member.findFirst({
       where: {
         serverId: params.serverId,
         profileId: profile.id,
@@ -40,24 +39,23 @@ const MemberIdPage = async ({
   
     if (!currentMember) {
       return redirect("/");
-    }
+    } */
   
-    const conversation = await getOrCreateConversation(currentMember.id, params.memberId);
+    const conversation = await getOrCreateConversation(profile.id, params.profileId);
   
     if (!conversation) {
-      return redirect(`/servers/${params.serverId}`);
+      return redirect(`/dms`);
     }
   
-    const { memberOne, memberTwo } = conversation;
+    const { profileOne, profileTwo } = conversation;
   
-    const otherMember = memberOne.profileId === profile.id ? memberTwo : memberOne;
+    const otherMember = profileOne.id === profile.id ? profileTwo : profileOne;
 
     return ( 
         <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
             <ChatHeader
-            imageUrl={otherMember.profile.imageUrl}
-            name={otherMember.profile.name}
-            serverId={params.serverId}
+            imageUrl={otherMember.imageUrl}
+            name={otherMember.name}
             type="conversation"
             />
             {searchParams.video && (
