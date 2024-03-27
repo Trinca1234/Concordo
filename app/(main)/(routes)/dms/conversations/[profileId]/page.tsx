@@ -1,3 +1,4 @@
+import { ChatConversationMessages } from "@/components/chat/chat-conversation-messages";
 import { ChatHeader } from "@/components/chat/chat-header";
 import { ChatInput } from "@/components/chat/chat-input";
 import { ChatMessages } from "@/components/chat/chat-messages";
@@ -27,19 +28,15 @@ const MemberIdPage = async ({
       return redirectToSignIn();
     }
   
-    /* const currentMember = await db.member.findFirst({
+    const CurrentProfile = await db.profile.findFirst({
       where: {
-        serverId: params.serverId,
-        profileId: profile.id,
-      },
-      include: {
-        profile: true,
-      },
-    });
+        id: profile.id,
+      }
+  });
   
-    if (!currentMember) {
+    if (!CurrentProfile) {
       return redirect("/");
-    } */
+    }
   
     const conversation = await getOrCreateConversation(profile.id, params.profileId);
   
@@ -56,6 +53,7 @@ const MemberIdPage = async ({
             <ChatHeader
             imageUrl={otherMember.imageUrl}
             name={otherMember.name}
+            serverId={""}
             type="conversation"
             />
             {searchParams.video && (
@@ -67,9 +65,9 @@ const MemberIdPage = async ({
             )}
             {!searchParams.video && (
               <>
-              <ChatMessages
-              member={currentMember}
-              name={otherMember.profile.name}
+              <ChatConversationMessages
+              profile={CurrentProfile}
+              name={otherMember.name}
               chatId={conversation.id}
               type="conversation"
               apiUrl="/api/direct-messages"
@@ -80,8 +78,8 @@ const MemberIdPage = async ({
                 conversationId: conversation.id,
               }}
               />
-              <ChatInput 
-              name={otherMember.profile.name}
+              <ChatInput
+              name={otherMember.name}
               type="conversation"
               apiUrl="/api/socket/direct-messages"
               query={{

@@ -9,13 +9,13 @@ export async function GET(
     req: Request
 ){
     try{
-        const profile = await currentProfile();
+        const Profile = await currentProfile();
         const { searchParams } = new URL(req.url);
 
         const cursor = searchParams.get("cursor");
         const conversationId = searchParams.get("conversationId");
 
-        if(!profile){
+        if(!Profile){
             return new NextResponse("Unauthorized", {status: 401});
         }
 
@@ -36,9 +36,9 @@ export async function GET(
                     conversationId,
                 },
                 include: {
-                    member: {
-                        include: {
-                            profile: true,
+                    profile: {
+                        select: {
+                            id: true,
                         }
                     }
                 },
@@ -53,11 +53,7 @@ export async function GET(
                     conversationId,
                 },
                 include: {
-                    member: {
-                        include: {
-                            profile: true,
-                        }
-                    }
+                    profile: true,
                 },
                 orderBy: {
                     createdAt: "desc",

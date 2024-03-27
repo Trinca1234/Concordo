@@ -58,7 +58,7 @@ export const MembersModal = () => {
                     serverId: server?.id,
                 },
             });
-
+ 
             const response = await axios.delete(url);
 
             router.refresh();

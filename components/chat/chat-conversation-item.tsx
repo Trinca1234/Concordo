@@ -5,7 +5,7 @@ import axios from "axios";
 import qs from "query-string";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Member, MemberRole, Profile } from "@prisma/client";
+import { Profile } from "@prisma/client";
 import { UserAvatar } from "../user-avatar";
 import { ActionTooltip } from "../action-tooltip";
 import { Edit, FileIcon, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
@@ -25,56 +25,51 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
+import { Result } from "postcss";
 
-interface ChatItemProps{
+interface ChatConversationItemProps{
     id: string;
     content: string;
-    member: Member & {
-        profile: Profile;
-    };
+    profile: Profile;
     timestamp: string;
     fileUrl: string | null;
     deleted: boolean;
-    currentMember: Member;
+    currentProfile: Profile;
     isUpdated: boolean;
     socketUrl: string;
     socketQuery: Record<string, string>;
 };
 
-const roleIconMap = {
-    "GUEST": null,
-    "MODERATOR": <ShieldCheck className="h-4 w-4 ml-2 text-indigo-500"/>,
-    "ADMIN": <ShieldAlert className="h-4 w-4 ml-2 text-rose-500"/>
-};
-
 const formSchema = z.object({
     content: z.string().min(1),
 });
- 
-export const ChatItem = ({
+
+export const ChatConversationItem = ({
     id,
     content,
-    member,
+    profile,
     timestamp,
     fileUrl,
     deleted,
-    currentMember,
+    currentProfile,
     isUpdated,
     socketUrl,
-    socketQuery 
-}: ChatItemProps) =>{
+    socketQuery
+}: ChatConversationItemProps) =>{
     const [ isEditing, setIsEditing ] = useState(false);
     const { onOpen } = useModal();
 
-    const params = useParams();
     const router = useRouter();
 
     const onMemberClick = () =>{
-        if(member.id === currentMember.id){
+        if(profile.id === currentProfile.id){
             return;
         }
+        else{
+            console.log(profile);
+        }
 
-        router.push(`/servers/${params?.serverId}/conversations/${member.id}`);
+        router.push(`/dms`);
     }
 
     useEffect(() =>{
@@ -105,7 +100,7 @@ export const ChatItem = ({
                 query: socketQuery,
             });
 
-            await axios.patch(url, values)
+            await axios.patch(url, values);
 
             form.reset();
             setIsEditing(false);
@@ -121,29 +116,24 @@ export const ChatItem = ({
     }, [content]);
 
     const fileType = fileUrl?.split(".").pop();
-    const isAdmin = currentMember.role === MemberRole.ADMIN;
-    const isModerator = currentMember.role === MemberRole.MODERATOR
-    const isOwner = currentMember.id === member.id;
-    const canDeleteMessage = !deleted && (isAdmin || isModerator || isOwner);
+    const isOwner = currentProfile.id === profile.id;
+    const canDeleteMessage = !deleted && isOwner;
     const canEditMessage = !deleted && isOwner && !fileUrl;
     const isPdf = fileType === "pdf" && fileUrl;
     const isImage = !isPdf && fileUrl;
 
-    return(
+    return (
         <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
-            <div className="group flex gap-x-2 items-start w-ful">
-                <div onClick={onMemberClick} className="cursor-pointer hvoer:drop-shadow-md transition">
-                    <UserAvatar src={member.profile.imageUrl} />
+            <div className="group flex gap-x-2 items-start w-full">
+                <div onClick={onMemberClick} className="cursor-pointer hover:drop-shadow-md transition">
+                    <UserAvatar src={profile.imageUrl} />
                 </div>
                 <div className="flex flex-col w-full">
                     <div className="flex items-center gap-x-2">
                         <div className="flex item-center">
                             <p onClick={onMemberClick} className="font-semibold text-sm hover:underline cursor-pointer">
-                                {member.profile.name}
+                                {profile.name}
                             </p>
-                            <ActionTooltip label={member.role}>
-                                {roleIconMap[member.role]}
-                            </ActionTooltip>
                         </div>
                         <span className="text-xm text-zinc-500 dark:text-zinc-400">
                             {timestamp}

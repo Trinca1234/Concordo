@@ -22,7 +22,7 @@ export const DmsUser = ({
     const router = useRouter();
 
     const onClick = () =>{
-        router.push(`/servers/${params?.serverId}/conversations/${profile.id}`)
+        router.push(`/dms/conversations/${profile.id}`)
     }
 
     return(

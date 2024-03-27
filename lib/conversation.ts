@@ -7,7 +7,7 @@ export const getOrCreateConversation = async (profileOneId: string, profileTwoId
         conversation = await createNewConversation(profileOneId, profileTwoId);
     }
 
-    return conversation
+    return conversation;
 }
 
 const findConversation = async (profileOneId: string, profileTwoId: string) =>{

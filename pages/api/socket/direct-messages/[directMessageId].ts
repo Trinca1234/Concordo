@@ -1,7 +1,6 @@
 import { currentProfilePages } from "@/lib/current-profile-pages";
 import { db } from "@/lib/db";
 import { NextApiResponseServerIo } from "@/types";
-import { MemberRole } from "@prisma/client";
 import { NextApiRequest } from "next";
 
 export default async function handler(
@@ -30,26 +29,22 @@ export default async function handler(
                 id: conversationId as string,
                 OR:[
                     {
-                        memberOne:{
-                            profileId: profile.id,
-                        }
+                        profileOneId: profile.id,
                     },
                     {
-                        memberTwo:{
-                            profileId: profile.id,
-                        }
+                        profileTwoId: profile.id,
                     }
                 ]
             },
             include:{
-                memberOne: {
-                    include:{
-                        profile: true,
+                profileOne: {
+                    select: {
+                        id: true,
                     }
                 },
-                memberTwo: {
-                    include:{
-                        profile: true,
+                profileTwo: {
+                    select: {
+                        id: true,
                     }
                 }
             }
@@ -59,9 +54,9 @@ export default async function handler(
             return res.status(404).json({error: "Conversation not found"});
         }
 
-        const member = conversation.memberOne.profileId === profile.id ? conversation.memberOne : conversation.memberTwo
+        const Profile = conversation.profileOne.id === profile.id ? conversation.profileOne : conversation.profileTwo
 
-        if(!member){
+        if(!Profile){
             return res.status(404).json({error: "Member not found"});
         }
 
@@ -71,9 +66,9 @@ export default async function handler(
                 conversationId: conversationId as string,
             },
             include: {
-                member:{
-                    include:{
-                        profile: true,
+                profile: {
+                    select: {
+                        id: true,
                     }
                 }
             }
@@ -83,12 +78,9 @@ export default async function handler(
             return res.status(404).json({error: "Message not found"});
         }
 
-        const isMessageOwner = directMessage.memberId === member.id;
-        const isAdmin = member.role === MemberRole.ADMIN;
-        const isModerator = member.role === MemberRole.MODERATOR;
-        const canModify = isMessageOwner || isAdmin || isModerator;
+        const isMessageOwner = directMessage.profileId === Profile.id;
 
-        if(!canModify){
+        if(!isMessageOwner){
             return res.status(401).json({error: "Unauthorized"});
         }
 
@@ -103,9 +95,9 @@ export default async function handler(
                     deleted: true,
                 },
                 include: {
-                    member:{
-                        include:{
-                            profile: true,
+                    profile: {
+                        select: {
+                            id: true,
                         }
                     }
                 }
@@ -125,9 +117,9 @@ export default async function handler(
                     content,
                 },
                 include: {
-                    member:{
-                        include:{
-                            profile: true,
+                    profile: {
+                        select: {
+                            id: true,
                         }
                     }
                 }
