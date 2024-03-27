@@ -8,12 +8,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Profile } from "@prisma/client";
 import { UserAvatar } from "../user-avatar";
 import { ActionTooltip } from "../action-tooltip";
-import { Edit, FileIcon, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
+import { Edit, FileIcon, Trash } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import {
     Form,
@@ -25,7 +25,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
-import { Result } from "postcss";
 
 interface ChatConversationItemProps{
     id: string;
@@ -44,7 +43,7 @@ const formSchema = z.object({
     content: z.string().min(1),
 });
 
-export const ChatConversationItem = ({
+export const ChatConversationItem = ({ 
     id,
     content,
     profile,

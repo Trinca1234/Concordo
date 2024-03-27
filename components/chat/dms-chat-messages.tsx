@@ -8,7 +8,7 @@ import { Fragment, useRef, ElementRef } from "react";
 import { format } from "date-fns";
 import { useChatSocket } from "@/hooks/use-chat-socket";
 import { useChatScroll } from "@/hooks/use-chat-scroll";
-import { ChatConversationItem } from "./chat-conversation-item";
+import { ChatConversationItem } from "./dms-chat-item";
  
 const DATE_FORMAT = "d MMM yyyy, HH:mm";
 
@@ -120,7 +120,7 @@ export const ChatConversationMessages = ({
                             id={message.id}
                             profile={message.profile}
                             currentProfile={profile}
-                            content={message.content}
+                            content={message.content} 
                             fileUrl={message.fileUrl}
                             deleted={message.deleted}
                             timestamp={format(new Date(message.createdAt), DATE_FORMAT)}

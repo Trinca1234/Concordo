@@ -1,4 +1,4 @@
-import { ChatConversationMessages } from "@/components/chat/chat-conversation-messages";
+import { ChatConversationMessages } from "@/components/chat/dms-chat-messages";
 import { ChatHeader } from "@/components/chat/chat-header";
 import { ChatInput } from "@/components/chat/chat-input";
 import { ChatMessages } from "@/components/chat/chat-messages";
