@@ -26,7 +26,7 @@ export default function RootLayout({
         <head>
           <link rel="icon" href="/favicon.ico"/>
         </head>
-        <body className={cn(
+        <body className={cn(  
           font.className,
           "bg-white dark:bg-[#313338]"
           )}>

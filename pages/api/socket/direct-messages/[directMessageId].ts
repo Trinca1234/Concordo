@@ -66,11 +66,7 @@ export default async function handler(
                 conversationId: conversationId as string,
             },
             include: {
-                profile: {
-                    select: {
-                        id: true,
-                    }
-                }
+                profile: true,
             }
         });
                         
@@ -95,11 +91,7 @@ export default async function handler(
                     deleted: true,
                 },
                 include: {
-                    profile: {
-                        select: {
-                            id: true,
-                        }
-                    }
+                    profile: true,
                 }
             });
         }
@@ -117,11 +109,7 @@ export default async function handler(
                     content,
                 },
                 include: {
-                    profile: {
-                        select: {
-                            id: true,
-                        }
-                    }
+                    profile: true,
                 }
             });
         }

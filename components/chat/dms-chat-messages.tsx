@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import { useChatSocket } from "@/hooks/use-chat-socket";
 import { useChatScroll } from "@/hooks/use-chat-scroll";
 import { ChatConversationItem } from "./dms-chat-item";
+import { useChatSocketDms } from "@/hooks/use-chat-socket-dms";
  
 const DATE_FORMAT = "d MMM yyyy, HH:mm";
 
@@ -58,7 +59,7 @@ export const ChatConversationMessages = ({
         paramKey,
         paramValue,
     });
-    useChatSocket({queryKey, addKey, updateKey});
+    useChatSocketDms({queryKey, addKey, updateKey});
     useChatScroll({
         chatRef, 
         bottomRef, 

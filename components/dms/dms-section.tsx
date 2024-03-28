@@ -10,7 +10,7 @@ interface DmsSectionProps{
     channelType?: ChannelType;
     server?:ServerWithMemberWithProfile;
 }
-
+ 
 export const DmsSection = ({
     label,
 }: DmsSectionProps) =>{

@@ -71,11 +71,7 @@ export default async function handler(
                 profileId: Profile.id,
             },
             include: {
-                profile: {
-                    select: {
-                        id: true,
-                    }
-                }
+                profile: true,
             }
         });
 

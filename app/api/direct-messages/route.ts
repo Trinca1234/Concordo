@@ -36,11 +36,7 @@ export async function GET(
                     conversationId,
                 },
                 include: {
-                    profile: {
-                        select: {
-                            id: true,
-                        }
-                    }
+                    profile: true,
                 },
                 orderBy: {
                     createdAt: "desc",
