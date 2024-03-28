@@ -1,35 +1,13 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { ChannelType, MemberRole } from "@prisma/client";
 
 import { redirect } from "next/navigation";
 import { DmsSearch } from "./dms-search";
 import { ScrollArea } from "../ui/scroll-area";
-import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
 import { Separator } from "../ui/separator";
-import { DmsSection } from "./dms-section";
 import { DmsUser } from "./dms-user";
 
-interface DmsSidebarProps{
-    serverId: string;
-}
-
-const iconMap={
-    [ChannelType.TEXT]:<Hash className="mr-2 h-4 w-4"/>,
-    [ChannelType.AUDIO]:<Mic className="mr-2 h-4 w-4"/>,
-    [ChannelType.VIDEO]:<Video className="mr-2 h-4 w-4"/>
-};
-
-const roleIconMap={
-    [MemberRole.GUEST]:null,
-    [MemberRole.MODERATOR]:<ShieldCheck className="h-4 w-4 mr-2 text-indigo-500"/>,
-    [MemberRole.ADMIN]:<ShieldAlert className="h-4 w-4 mr-2 text-rose-500"/>
-    
-};
-
-export const DmsSidebar = async ({
-    serverId
-}: DmsSidebarProps) =>{
+export const DmsSidebar = async () =>{
     const profile = await currentProfile();
 
     if(!profile){
@@ -60,16 +38,17 @@ export const DmsSidebar = async ({
                 <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2"/>
                 {!!users?.length &&(
                     <div className="mb-2">
-                        <DmsSection
-                        sectionType="users"
-                        role={role}
-                        label="Users"
-                        />
+                        <div className="flex items-center justify-between py-2">
+                            <p className="text-xs uppercase font-semibold text-zinc-500 dark:text-zinc-400">
+                                Users
+                            </p>
+                        </div>
                         <div className="space-y-[2px}">
                             {users.map((users) => (
                                 <DmsUser
                                     key={users.id}
                                     profile={users}
+                                    type="users"
                                 />
                             ))}
                         </div>

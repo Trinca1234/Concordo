@@ -10,7 +10,7 @@ export const NavigationDm= () =>{
     const router = useRouter();
 
     const onClick= () =>{
-        router.push("/dms/friends");
+        router.push("/dms/friends/all");
     }
     return(
         <div>

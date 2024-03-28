@@ -13,6 +13,7 @@ import { DeleteChannelModal } from "@/components/models/delete-channel-modal";
 import { EditChannelModal } from "@/components/models/edit-channel-modal";
 import { MessageFileModal } from "@/components/models/message-file-modal";
 import { DeleteMessageModal } from "@/components/models/delete-message-modal";
+import { ReportMessageModal } from "../models/report-message-modal";
 
 export const ModalProvider = () =>{
     const [isMounted, setIsMounted] = useState(false);
@@ -38,6 +39,7 @@ export const ModalProvider = () =>{
             <EditChannelModal/>
             <MessageFileModal/>
             <DeleteMessageModal/>
+            <ReportMessageModal/>
         </>
     )
 }
