@@ -66,6 +66,10 @@ export const ChatItem = ({
     const [ isEditing, setIsEditing ] = useState(false);
     const { onOpen } = useModal();
 
+    if(deleted == true){
+        content = "This message has been deleted";
+    }
+
     const params = useParams();
     const router = useRouter();
 

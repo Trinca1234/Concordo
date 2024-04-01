@@ -5,7 +5,7 @@ import axios from "axios";
 import qs from "query-string";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Profile } from "@prisma/client";
+import { DirectMessage, Profile } from "@prisma/client";
 import { UserAvatar } from "../user-avatar";
 import { ActionTooltip } from "../action-tooltip";
 import { Edit, FileIcon, Flag, Trash } from "lucide-react";
@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
 
 interface ChatConversationItemProps{
+    directMessage: DirectMessage,
     id: string;
     content: string;
     profile: Profile;
@@ -57,6 +58,10 @@ export const ChatConversationItem = ({
 }: ChatConversationItemProps) =>{
     const [ isEditing, setIsEditing ] = useState(false);
     const { onOpen } = useModal();
+
+    if(deleted == true){
+        content = "This message has been deleted";
+    }
 
     const router = useRouter();
 
@@ -106,6 +111,7 @@ export const ChatConversationItem = ({
         }catch(error){
             console.log(error);
         }
+        console.log("ola");
     }
 
     useEffect(()=>{
@@ -120,6 +126,7 @@ export const ChatConversationItem = ({
     const canEditMessage = !deleted && isOwner && !fileUrl;
     const isPdf = fileType === "pdf" && fileUrl;
     const isImage = !isPdf && fileUrl;
+
 
     return (
         <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
@@ -241,9 +248,10 @@ export const ChatConversationItem = ({
                 <div className="hidden group-hover:flex items-center gap-x-2 absolute p-1 -top-2 right-5 bg-white dark:bg-zinc-800 border rounded-sm">
                     <ActionTooltip label="Report">
                         <Flag
-                        onClick={()=> onOpen("reportMessage", {
-                            apiUrl: `${socketUrl}/${id}`,
-                            query: socketQuery
+                        onClick={() => onOpen("reportMessage", {
+                            apiUrl: `/api/direct-messages/reports`,
+                            query: socketQuery,
+                            ids: id
                         })}
                         className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition"
                         />

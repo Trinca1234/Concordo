@@ -15,7 +15,9 @@ model Profile {
   imageUrl String @db.Text
   email String @db.Text
 
-  reports DirectMessageReport[]
+  reportDms DirectMessageReport[]
+  reporterProfile ProfileReport[] @relation("ReporterProfile")
+  reportedProfile ProfileReport[] @relation("ReportedProfile")
 
   servers Server[]
   members Member[]
@@ -41,6 +43,8 @@ model Server {
 
   members Member[]
   channels Channel[]
+
+  serverReports ServerReport[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -71,6 +75,8 @@ model Member {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  serverReports ServerReport[]
 
   @@index([profileId])
   @@index([serverId])
@@ -199,3 +205,38 @@ model DirectMessageReport {
   @@index([reporterId])
 }
 
+model ProfileReport {
+  id String @id @default(uuid())
+  reason String
+  status String
+  
+  profileId String
+  profile Profile @relation("ReportedProfile", fields: [profileId], references: [id])
+
+  reporterId String
+  reporter Profile @relation("ReporterProfile", fields: [reporterId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([profileId])
+  @@index([reporterId])
+}
+
+model ServerReport {
+  id String @id @default(uuid())
+  reason String
+  status String
+  
+  serverId String
+  server Server @relation(fields: [serverId], references: [id])
+
+  reporterId String
+  reporter Member @relation(fields: [reporterId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  
+  @@index([serverId])
+  @@index([reporterId])
+}

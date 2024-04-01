@@ -14,17 +14,19 @@ export async function DELETE(
         
         const serverId = searchParams.get("serverId");
 
+        
         if(!profile){
             return new NextResponse("Unauthorized", {status: 401});
         }
-
+        
         if(!serverId){
             return new NextResponse("Server ID missing", {status: 400});
         }
-
+        
         if(!params.channelId){
             return new NextResponse("Channel ID missing", {status: 400});
         }
+
 
         const server = await db.server.update({
             where: {

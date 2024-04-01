@@ -86,8 +86,6 @@ export default async function handler(
                     id: directMessageId as string,
                 },
                 data:{
-                    fileUrl: null,
-                    content: "This message has been deleted.",
                     deleted: true,
                 },
                 include: {

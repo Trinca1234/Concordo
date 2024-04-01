@@ -13,24 +13,28 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import qs from "query-string";
 import { useModal } from "@/hooks/use-modal-store";
-import { Input } from "@/components/ui/input";
 
 export const ReportMessageModal = () => {
     const { isOpen, onClose, type, data } = useModal();
     const isModalOpen = isOpen && type === "reportMessage";
-    const { apiUrl, query } = data;
+    const { apiUrl, query, ids } = data;
     const [isLoading, setIsLoading] = useState(false);
     const [reason, setReason] = useState("");
 
     const onClick = async () => {
         try {
             setIsLoading(true);
+
             const url = qs.stringifyUrl({
                 url: apiUrl || "",
-                query,
+                query:{
+                    reason: reason,
+                    id: ids
+                }
             });
-            
-            await axios.delete(url, { data: { reason } });
+
+            await axios.post(url);
+
             onClose();
         } catch (error) {
             console.log(error);

@@ -15,7 +15,7 @@ import qs from "query-string";
 import { useModal } from "@/hooks/use-modal-store";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-
+ 
 
 export const DeleteMessageModal = () => {
     const {isOpen, onClose, type, data } = useModal();
