@@ -46,7 +46,7 @@ const formSchema = z.object({
 
 export const ChatConversationItem = ({ 
     id,
-    content,
+    content,  
     profile,
     timestamp,
     fileUrl,

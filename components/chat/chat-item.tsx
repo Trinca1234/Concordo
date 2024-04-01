@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Member, MemberRole, Profile } from "@prisma/client";
 import { UserAvatar } from "../user-avatar";
 import { ActionTooltip } from "../action-tooltip";
-import { Edit, FileIcon, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
+import { Edit, FileIcon, Flag, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -246,6 +246,16 @@ export const ChatItem = ({
                         onClick={()=> onOpen("deleteMessage", {
                             apiUrl: `${socketUrl}/${id}`,
                             query: socketQuery
+                        })}
+                        className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition"
+                        />
+                    </ActionTooltip>
+                    <ActionTooltip label="Report">
+                        <Flag
+                        onClick={() => onOpen("reportMessage", {
+                            apiUrl: `/api/messages/reports`,
+                            query: socketQuery,
+                            ids: id
                         })}
                         className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition"
                         />

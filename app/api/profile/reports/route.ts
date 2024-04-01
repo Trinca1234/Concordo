@@ -8,14 +8,14 @@ export async function POST(
     try {
         const profile = await currentProfile();
         const { searchParams } = new URL(req.url);
-        const messageId = searchParams.get("id");
+        const profileId = searchParams.get("id");
         const reason = searchParams.get("reason");
 
         if (!profile) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        if (!messageId) {
+        if (!profileId) {
             return new NextResponse("Direct Message ID missing", { status: 400 });
         }
 
@@ -23,9 +23,9 @@ export async function POST(
             return new NextResponse("Reason missing", { status: 400 });
         }
 
-        const report = await db.messageReport.create({
+        const report = await db.profileReport.create({
             data: {
-                messageId: messageId,
+                profileId: profileId,
                 reason: reason,
                 status: "Pending",
                 reporterId: profile.id,

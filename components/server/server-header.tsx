@@ -9,7 +9,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
-import { ChevronDown, LogOut, PlusCircle, Settings, Trash, UserPlus, Users } from "lucide-react";
+import { ChevronDown, Flag, LogOut, PlusCircle, Settings, Trash, UserPlus, Users } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
 
 interface ServerHeaderProps{
@@ -108,6 +108,21 @@ export const ServerHeader = ({
                         >
                             Leave Server
                             <LogOut
+                            className="h-4 w-4 ml-auto"
+                            />
+                        </DropdownMenuItem>
+                    )}
+                    {!isAdmin &&(
+                        <DropdownMenuItem
+                        onClick={() => onOpen("reportMessage", {
+                            apiUrl: `/api/servers/reports`,
+                            query: server,
+                            ids: server.id
+                        })}
+                        className="text-rose-500 px-3 py-2 text-sm cursor-pointer"
+                        >
+                            Report Server
+                            <Flag
                             className="h-4 w-4 ml-auto"
                             />
                         </DropdownMenuItem>

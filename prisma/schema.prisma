@@ -27,6 +27,8 @@ model Profile {
   conversationsReceived Conversation[] @relation("ProfileTwo")
 
   directMessages DirectMessage[]
+  serverReports ServerReport[]
+  reports MessageReport[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -71,12 +73,10 @@ model Member {
   server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
 
   messages Message[]
-  reports MessageReport[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  serverReports ServerReport[]
 
   @@index([profileId])
   @@index([serverId])
@@ -178,7 +178,7 @@ model MessageReport {
   message Message @relation(fields: [messageId], references: [id])
 
   reporterId String
-  reporter Member @relation(fields: [reporterId], references: [id])
+  reporter Profile @relation(fields: [reporterId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -232,7 +232,7 @@ model ServerReport {
   server Server @relation(fields: [serverId], references: [id])
 
   reporterId String
-  reporter Member @relation(fields: [reporterId], references: [id])
+  reporter Profile @relation(fields: [reporterId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
