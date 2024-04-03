@@ -25,6 +25,9 @@ model Profile {
   
   conversationsInitiated Conversation[] @relation("ProfileOne")
   conversationsReceived Conversation[] @relation("ProfileTwo")
+  
+  friendshipInitiated Friends[] @relation("FriendOne")
+  friendshipReceived Friends[] @relation("FriendTwo")
 
   directMessages DirectMessage[]
   serverReports ServerReport[]
@@ -239,4 +242,28 @@ model ServerReport {
   
   @@index([serverId])
   @@index([reporterId])
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  DENIED
+  BLOCKED
+}
+
+model Friends {
+  id String @id @default(uuid())
+  status FriendshipStatus
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  friendOneId String
+  friendOne Profile @relation("FriendOne", fields: [friendOneId], references: [id], onDelete: Cascade)
+
+  friendTwoId String
+  friendTwo Profile @relation("FriendTwo", fields: [friendTwoId], references: [id], onDelete: Cascade)
+
+  @@index([friendTwoId])
+
+  @@unique([friendOneId, friendTwoId])
 }

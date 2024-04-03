@@ -14,6 +14,7 @@ import { EditChannelModal } from "@/components/models/edit-channel-modal";
 import { MessageFileModal } from "@/components/models/message-file-modal";
 import { DeleteMessageModal } from "@/components/models/delete-message-modal";
 import { ReportMessageModal } from "../models/report-message-modal";
+import { AddFriendModal } from "../models/add-friend-model";
 
 export const ModalProvider = () =>{
     const [isMounted, setIsMounted] = useState(false);
@@ -40,6 +41,7 @@ export const ModalProvider = () =>{
             <MessageFileModal/>
             <DeleteMessageModal/>
             <ReportMessageModal/>
+            <AddFriendModal/>
         </>
     )
 }

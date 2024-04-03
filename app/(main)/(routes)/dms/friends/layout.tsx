@@ -10,12 +10,17 @@
     }) => {
         const profile = await currentProfile();
 
+        if(!profile){
+            return
+        }
 
         return ( 
             
             <div className="h-full">
                 <div className="bg-white dark:bg-[#313338] flex flex-col w-full h-16">
-                    <FriendsHeader />
+                    <FriendsHeader 
+                    profile={ profile }
+                    />
                 </div>
                 <main className="h-auto">
                     {children}
