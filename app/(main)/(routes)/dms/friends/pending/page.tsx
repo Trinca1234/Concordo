@@ -1,6 +1,6 @@
 import { currentProfile } from "@/lib/current-profile";
 import { redirectToSignIn } from "@clerk/nextjs";
-import { FriendsAllBody } from "@/components/friends/friends-all-body";
+import { FriendsPendingBody } from "@/components/friends/friends-pending-body";
 
 const FriendAllPage = async () => {
     const profile = await currentProfile();
@@ -11,7 +11,7 @@ const FriendAllPage = async () => {
 
     return ( 
         <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
-            <FriendsAllBody/>
+            <FriendsPendingBody/>
         </div>
      );
 }

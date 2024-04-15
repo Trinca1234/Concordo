@@ -6,19 +6,29 @@ import { currentProfile } from "@/lib/current-profile";
 import { DmsUser } from "../dms/dms-user";
 import { Search } from "lucide-react";
 
-export const FriendsAllBody = async () => {
+export const FriendsPendingBody = async () => {
 
     const profile = await currentProfile();
 
     if(!profile){
         return redirect("/");
     }
+    
+    const pending = await db.friends.findMany({
+        where:{
+            friendOneId: profile.id
+        },
+        select:{
+            friendTwoId: true,
+        }
+    })
 
+    const pendingIds = pending.map(p => p.friendTwoId);
     
     const users = await db.profile.findMany({
         where:{
             id: {
-                not: profile.id
+                in: pendingIds
             }
         },
         select: {

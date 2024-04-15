@@ -7,8 +7,8 @@ import { AxiosError } from 'axios';
 export const getOrCreateFriendship = async (friendOneId: string, friendTwoId: string) =>{
     console.log(friendOneId, friendTwoId)
     let friendship = await findFriendship(friendOneId, friendTwoId) || await findFriendship(friendTwoId, friendOneId);
-
-    if(!friendship){
+    
+    if(friendship == "Non existent friendship"){
         const resultado = await createNewFriendship(friendOneId, friendTwoId);
         return resultado;
     }
@@ -44,7 +44,7 @@ const findFriendship = async (friendOneId: string, friendTwoId: string) => {
 
         const response = await axios.get(url);
 
-        return response;
+        return response.statusText;
 
     } catch (error: any) {
         console.error("Error creating friendship:", error);

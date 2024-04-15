@@ -30,11 +30,15 @@ export async function GET(
             },
         });
 
-        if(friendship?.status == "BLOCKED"){
-            return "You've been blocked by this user";
+        if(!friendship){
+            return new NextResponse("Non existent friendship", { status: 200 });
         }
-        else{
-            return "He's already your friend";
+
+        if(friendship?.status == "BLOCKED"){
+            return new NextResponse("Friendship status blocked", { status: 200 });
+        }
+        else if(friendship?.status == "PENDING"){
+            return new NextResponse("Already sent friend request", { status: 200 });
         }
         
         

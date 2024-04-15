@@ -54,6 +54,7 @@ export const AddFriendModal = () => {
     const isModalOpen = isOpen && type === "addFriend";
     const { ids } = data;
 
+    
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -87,7 +88,7 @@ export const AddFriendModal = () => {
             }
 
             if (typeof friendship === 'string') {
-                setFormMessage(friendship);
+                setFormMessage(friendship); 
                 return;
             }
 
@@ -103,10 +104,6 @@ export const AddFriendModal = () => {
         form.reset();
         onClose();
     };
-
-    if (!ids) {
-        return null;
-    }
 
     return (
         <Dialog open={isModalOpen} onOpenChange={handleClose}>

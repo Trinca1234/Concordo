@@ -19,7 +19,7 @@ interface FriendsHeaderProp {
 }
 
 
-export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
+export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{ 
 
     const {onOpen} = useModal();
 
