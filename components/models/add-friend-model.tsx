@@ -41,7 +41,7 @@ import { getOrCreateFriendship } from "@/lib/friend";
 import { currentProfile } from "@/lib/current-profile";
 
 const formSchema = z.object({
-    id: z.string().min(1, {
+    email: z.string().min(1, {
         message: "Profile is required."
     })
 });
@@ -58,7 +58,7 @@ export const AddFriendModal = () => {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            id: "",
+            email: "",
         }
     });
 
@@ -80,7 +80,7 @@ export const AddFriendModal = () => {
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            const friendship = await getOrCreateFriendship(ids, values.id);
+            const friendship = await getOrCreateFriendship(ids, values.email);
 
             if (friendship instanceof AxiosError) {
                 setFormMessage(friendship.response?.data);
@@ -118,17 +118,17 @@ export const AddFriendModal = () => {
                         <div className="space-y-8 px-6">
                             <FormField
                                 control={form.control}
-                                name="id"
+                                name="email"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
-                                            Profile id
+                                            Email
                                         </FormLabel>
                                         <FormControl>
                                             <Input
                                                 disabled={isLoading}
                                                 className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
-                                                placeholder="Enter profile id"
+                                                placeholder="Enter the email"
                                                 {...field}
                                             />
                                         </FormControl>

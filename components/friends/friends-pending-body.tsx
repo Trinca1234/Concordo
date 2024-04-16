@@ -51,7 +51,7 @@ export const FriendsPendingBody = async () => {
                             <div className="space-y-[2px} ">
                                 {users.map((user) => (
                                     <div key={user.id} className="border-t border-zinc-200 dark:border-zinc-700">
-                                        <DmsUser profile={user} type={"friends"}/>
+                                        <DmsUser profile={user} type={"Pending"}/>
                                     </div>
                                 ))}
                             </div>

@@ -2,10 +2,12 @@
 
 import { cn } from "@/lib/utils";
 import { Member, MemberRole, Profile, Server } from "@prisma/client"
-import { CircleEllipsis, CircleEllipsisIcon, Flag, Search, Settings, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Check, CircleEllipsis, CircleEllipsisIcon, Flag, Search, Settings, ShieldAlert, ShieldCheck, X } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { UserAvatar } from "../user-avatar";
 import { useModal } from "@/hooks/use-modal-store";
+import qs from "query-string";
+import axios from "axios";
 
 interface DmsUserProps {
     profile: {
@@ -23,15 +25,28 @@ export const DmsUser = ({
     const params = useParams();
     const router = useRouter();
 
+    
+
     const { onOpen } = useModal();
 
     const onClick = () => {
         router.push(`/dms/conversations/${profile.id}`)
     }
 
-    const onClickSettings = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.stopPropagation();
-        router.push(`/dms/conversations/${profile.id}`)
+    async function onAccept() {
+        try {
+            const url =  qs.stringifyUrl({
+                url: "/api/friends/acceptFriendRequest",
+                query: {
+                    TwoId: profile.id
+                }
+            });
+    
+            const response = await axios.patch(url);
+            router.refresh();
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -59,6 +74,23 @@ export const DmsUser = ({
                     className="flex items-center hover:bg-zinc-800/10 dark:hover:bg-zinc-800/50 px-2 py-2 mr-2"
                     >
                         <Settings className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
+                    </button>
+                </>
+            )}
+            {type === "Pending" && (
+                <>
+                    <button onClick={onAccept} 
+                    className="ml-auto flex items-center hover:bg-zinc-800/10 dark:hover:bg-zinc-800/50 px-2 py-2 mr-0"
+                    >
+                        <Check className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
+                    </button>
+                    <button onClick={() => onOpen("reportMessage", {
+                        apiUrl: `/api/profile/reports`,
+                        ids: profile.id
+                    })} 
+                    className="flex items-center hover:bg-zinc-800/10 dark:hover:bg-zinc-800/50 px-2 py-2 mr-2"
+                    >
+                        <X className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
                     </button>
                 </>
             )}

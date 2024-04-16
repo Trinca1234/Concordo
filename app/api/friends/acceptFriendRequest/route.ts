@@ -3,17 +3,17 @@ import { db } from "@/lib/db";
 import { useSearchParams } from "next/navigation";
 import { NextResponse } from "next/server";
 
-export async function GET(
+export async function PATCH(
     req: Request
 ) {
     try {
 
         const {searchParams} = new URL(req.url);
-
-        const friendOneId = searchParams.get("OneId");
         const friendTwoId = searchParams.get("TwoId");
 
-        if (!friendOneId) {
+        const profile = await currentProfile()
+
+        if (!profile) {
             return new NextResponse("Friend One ID missing", { status: 400 });
         }
 
@@ -23,27 +23,32 @@ export async function GET(
 
         const friendship = await db.friends.findFirst({
             where: {
-                AND: [
-                    { friendOneId: friendOneId },
-                    { friendTwoId: friendTwoId },
-                ]
+                friendOneId: profile.id ,
+                friendTwoId: friendTwoId ,
             },
         });
 
         if(!friendship){
-            return new NextResponse("Non existent friendship", { status: 200 });
-        }
+            const friendship = await db.friends.findFirst({
+                where: {
+                    friendOneId: friendTwoId ,
+                    friendTwoId: profile.id ,
+                },
+            });
+    
+            if(!friendship){
+                return new NextResponse("Non existent friendship", { status: 200 });
+            }
 
-        if(friendship?.status == "BLOCKED"){
-            return new NextResponse("Friendship status blocked", { status: 403 });
+            await db.friends.update({
+                where:{
+                    id: friendship.id,
+                },
+                data:{
+                    status: "ACCEPTED"
+                }
+            })
         }
-        else if(friendship?.status == "PENDING"){
-            return new NextResponse("Already sent friend request", { status: 403 });
-        }
-        else if(friendship?.status == "ACCEPTED"){
-            return new NextResponse("Hes already your friend", { status: 403 })
-        }
-        
         
         return NextResponse.json(friendship);
     } catch (error) {
