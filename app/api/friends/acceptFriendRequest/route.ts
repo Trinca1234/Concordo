@@ -1,6 +1,5 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { useSearchParams } from "next/navigation";
 import { NextResponse } from "next/server";
 
 export async function PATCH(
@@ -23,16 +22,16 @@ export async function PATCH(
 
         const friendship = await db.friends.findFirst({
             where: {
-                friendOneId: profile.id ,
-                friendTwoId: friendTwoId ,
+                friendOneId: profile.id,
+                friendTwoId: friendTwoId
             },
         });
 
         if(!friendship){
             const friendship = await db.friends.findFirst({
                 where: {
-                    friendOneId: friendTwoId ,
-                    friendTwoId: profile.id ,
+                    friendOneId: friendTwoId,
+                    friendTwoId: profile.id
                 },
             });
     

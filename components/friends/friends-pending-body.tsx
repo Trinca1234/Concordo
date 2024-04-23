@@ -14,21 +14,34 @@ export const FriendsPendingBody = async () => {
         return redirect("/");
     }
     
-    const pending = await db.friends.findMany({
+    const pending1 = await db.friends.findMany({
         where:{
-            friendOneId: profile.id
+            friendOneId: profile.id,
+            status: "PENDING"
         },
         select:{
             friendTwoId: true,
         }
     })
 
-    const pendingIds = pending.map(p => p.friendTwoId);
+    const pendingIds = pending1.map(p => p.friendTwoId);
+
+    const pending2 = await db.friends.findMany({
+        where:{
+            friendTwoId: profile.id,
+            status: "PENDING"
+        },
+        select:{
+            friendOneId: true,
+        }
+    })
+
+    const pending2Ids = pending2.map(p => p.friendOneId);
     
     const users = await db.profile.findMany({
         where:{
             id: {
-                in: pendingIds
+                in: [...pendingIds, ...pending2Ids]
             }
         },
         select: {
@@ -48,12 +61,15 @@ export const FriendsPendingBody = async () => {
                 <ScrollArea className="flex px-3">
                     {!!users?.length &&(
                         <div className="mb-2">
-                            <div className="space-y-[2px} ">
-                                {users.map((user) => (
-                                    <div key={user.id} className="border-t border-zinc-200 dark:border-zinc-700">
-                                        <DmsUser profile={user} type={"Pending"}/>
-                                    </div>
-                                ))}
+                            <div className="space-y-[2px] ">
+                                {users.map((user) => {
+                                    const type = pendingIds.includes(user.id) ? "Pending1" : "Pending2";
+                                    return (
+                                        <div key={user.id} className="border-t border-zinc-200 dark:border-zinc-700">
+                                            <DmsUser profile={user} type={type}/>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     )}

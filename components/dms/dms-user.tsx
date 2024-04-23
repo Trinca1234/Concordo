@@ -25,8 +25,6 @@ export const DmsUser = ({
     const params = useParams();
     const router = useRouter();
 
-    
-
     const { onOpen } = useModal();
 
     const onClick = () => {
@@ -34,6 +32,8 @@ export const DmsUser = ({
     }
 
     async function onAccept() {
+
+        console.log("entrou")
         try {
             const url =  qs.stringifyUrl({
                 url: "/api/friends/acceptFriendRequest",
@@ -43,6 +43,9 @@ export const DmsUser = ({
             });
     
             const response = await axios.patch(url);
+
+            console.log(response);
+
             router.refresh();
         } catch (error) {
             console.log(error);
@@ -57,7 +60,7 @@ export const DmsUser = ({
                     {profile.name}
                 </p>
             </button>
-            {type === "friends" && (
+            {type === "Accepted" && (
                 <>
                     <button onClick={() => onOpen("reportMessage", {
                         apiUrl: `/api/profile/reports`,
@@ -77,9 +80,38 @@ export const DmsUser = ({
                     </button>
                 </>
             )}
-            {type === "Pending" && (
+            {type === "Pending1" && (
+                <>
+                    <button onClick={() => onOpen("reportMessage", {
+                        apiUrl: `/api/profile/reports`,
+                        ids: profile.id
+                    })} 
+                    className="flex items-center hover:bg-zinc-800/10 dark:hover:bg-zinc-800/50 px-2 py-2 mr-2"
+                    >
+                        <X className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
+                    </button>
+                </>
+            )}
+            {type === "Pending2" && (
                 <>
                     <button onClick={onAccept} 
+                    className="ml-auto flex items-center hover:bg-zinc-800/10 dark:hover:bg-zinc-800/50 px-2 py-2 mr-0"
+                    >
+                        <Check className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
+                    </button>
+                    <button onClick={() => onOpen("reportMessage", {
+                        apiUrl: `/api/profile/reports`,
+                        ids: profile.id
+                    })} 
+                    className="flex items-center hover:bg-zinc-800/10 dark:hover:bg-zinc-800/50 px-2 py-2 mr-2"
+                    >
+                        <X className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
+                    </button>
+                </>
+            )}
+            {type === "Blocked" && (
+                <>
+                    <button 
                     className="ml-auto flex items-center hover:bg-zinc-800/10 dark:hover:bg-zinc-800/50 px-2 py-2 mr-0"
                     >
                         <Check className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
