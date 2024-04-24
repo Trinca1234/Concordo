@@ -10,6 +10,7 @@ export async function POST(
         const { searchParams } = new URL(req.url);
         const friendOneId = searchParams.get("OneId");
         const friendTwoId = searchParams.get("TwoId");
+        const sender = searchParams.get("sender");
 
         if (!profile) {
             return new NextResponse("Unauthorized", { status: 401 });
@@ -21,6 +22,10 @@ export async function POST(
 
         if (!friendTwoId) {
             return new NextResponse("Friend Two ID missing", { status: 400 });
+        }
+
+        if (!sender) {
+            return new NextResponse("Sender ID missing", { status: 400 });
         }
 
         if(friendTwoId == profile.id){
@@ -41,7 +46,8 @@ export async function POST(
             data:{
                 friendOneId: friendOneId,
                 friendTwoId: friendTwoId,
-                status: "PENDING"
+                status: "PENDING",
+                senderId: sender
             },
         });
         

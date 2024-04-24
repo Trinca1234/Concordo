@@ -1,5 +1,5 @@
 "use client"
-import { ChevronDown, Hash, HelpCircle, Inbox, Settings, UserPlus } from "lucide-react";
+import { Bell, ChevronDown, Hash, HelpCircle, Inbox, Settings, UserPlus } from "lucide-react";
 import { MobileTogle } from "@/components/mobile-toggle";
 import { UserAvatar } from "@/components/user-avatar";
 import { SocketIndicator } from "@/components/socket-indicator";
@@ -115,7 +115,7 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
                         <button
                         className="w-full text-md font-semibold px-3 flex items-center h-12 border-neutral-200 dark:border-neutral-800 border-b-2 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"
                         >
-                            <Inbox className=" mx-3"/>
+                            <Bell className=" mx-3"/>
                         </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent

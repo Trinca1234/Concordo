@@ -8,21 +8,25 @@ export async function PATCH(
     try {
 
         const {searchParams} = new URL(req.url);
+        const friendOneId = searchParams.get("OneId");
         const friendTwoId = searchParams.get("TwoId");
+        const senderId = searchParams.get("sender");
 
-        const profile = await currentProfile()
-
-        if (!profile) {
+        if (!friendOneId) {
             return new NextResponse("Friend One ID missing", { status: 400 });
         }
 
         if (!friendTwoId) {
-            return new NextResponse("Friend Two ID missing", { status: 400 });
+            return new NextResponse("Friend One ID missing", { status: 400 });
+        }
+
+        if (!senderId) {
+            return new NextResponse("Sender ID missing", { status: 400 });
         }
 
         const friendship = await db.friends.findFirst({
             where: {
-                friendOneId: profile.id,
+                friendOneId: friendOneId,
                 friendTwoId: friendTwoId
             },
         });
@@ -31,7 +35,7 @@ export async function PATCH(
             const friendship = await db.friends.findFirst({
                 where: {
                     friendOneId: friendTwoId,
-                    friendTwoId: profile.id
+                    friendTwoId: friendOneId
                 },
             });
     
@@ -44,7 +48,8 @@ export async function PATCH(
                     id: friendship.id,
                 },
                 data:{
-                    status: "ACCEPTED"
+                    status: "PENDING",
+                    senderId: senderId
                 }
             })
             return NextResponse.json(friendship);
@@ -55,7 +60,8 @@ export async function PATCH(
                 id: friendship.id,
             },
             data:{
-                status: "ACCEPTED"
+                status: "PENDING",
+                senderId: senderId
             }
         })
         

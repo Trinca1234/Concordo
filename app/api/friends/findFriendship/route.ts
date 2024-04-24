@@ -33,15 +33,15 @@ export async function GET(
         if(!friendship){
             return new NextResponse("Non existent friendship", { status: 200 });
         }
-
+ 
         if(friendship?.status == "BLOCKED"){
-            return new NextResponse("Friendship status blocked", { status: 403 });
+            return new NextResponse("User blocked", { status: 200 });
         }
         else if(friendship?.status == "PENDING"){
-            return new NextResponse("Already sent friend request", { status: 403 });
+            return new NextResponse("Already sent friend request", { status: 200 });
         }
         else if(friendship?.status == "ACCEPTED"){
-            return new NextResponse("Hes already your friend", { status: 403 })
+            return new NextResponse("Hes already your friend", { status: 200 })
         }
         
         

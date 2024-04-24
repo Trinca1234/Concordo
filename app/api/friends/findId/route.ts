@@ -21,8 +21,10 @@ export async function GET(
             },
         });
 
+        console.log(id);
+
         if(!id){
-            return new NextResponse("This email does not have an account", { status: 200 });
+            return new NextResponse("This email does not have an account", { status: 401 });
         }
         
         

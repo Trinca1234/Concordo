@@ -2,7 +2,7 @@ import { currentProfile } from "@/lib/current-profile";
 import { redirectToSignIn } from "@clerk/nextjs";
 import { FriendsBlockedBody } from "@/components/friends/friends-blocked-body";
 
-const FriendAllPage = async () => {
+const FriendBlockPage = async () => {
     const profile = await currentProfile();
   
     if (!profile) {
@@ -16,4 +16,4 @@ const FriendAllPage = async () => {
      );
 }
  
-export default FriendAllPage;
+export default FriendBlockPage;

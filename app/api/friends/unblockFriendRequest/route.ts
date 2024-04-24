@@ -44,7 +44,8 @@ export async function PATCH(
                     id: friendship.id,
                 },
                 data:{
-                    status: "ACCEPTED"
+                    status: "DENIED",
+                    senderId: profile.id
                 }
             })
             return NextResponse.json(friendship);
@@ -55,7 +56,8 @@ export async function PATCH(
                 id: friendship.id,
             },
             data:{
-                status: "ACCEPTED"
+                status: "DENIED",
+                senderId: profile.id
             }
         })
         

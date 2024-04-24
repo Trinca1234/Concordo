@@ -1,75 +1,99 @@
+"use client"
+
 import { redirect, useRouter } from "next/navigation";
 import { FriendSearch } from "./friends-search";
 import { ScrollArea } from "../ui/scroll-area";
 import { db } from "@/lib/db";
 import { currentProfile } from "@/lib/current-profile";
 import { DmsUser } from "../dms/dms-user";
-import { Search } from "lucide-react";
+import qs from "query-string";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 
-export const FriendsPendingBody = async () => {
 
-    const profile = await currentProfile();
+export const FriendsPendingBody = () => {
+    const [users, setUsers] = useState<{ id: string; name: string; imageUrl: string; type: string; }[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    if(!profile){
-        return redirect("/");
+    async function fetchUsers() {
+        try {
+            console.log("fetchou");
+            const url = qs.stringifyUrl({
+                url: "/api/friends/getUsers",
+                query: {
+                    status: "PENDING"
+                }
+            });
+        
+            const users = await axios.get(url);
+            console.log("Users:", users);
+            setUsers(users.data);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching users:", error);
+            setLoading(false);
+        }
     }
-    
-    const pending1 = await db.friends.findMany({
-        where:{
-            friendOneId: profile.id,
-            status: "PENDING"
-        },
-        select:{
-            friendTwoId: true,
-        }
-    })
 
-    const pendingIds = pending1.map(p => p.friendTwoId);
+    useEffect(() => {
+        const intervalId = setInterval(fetchUsers, 2000);
 
-    const pending2 = await db.friends.findMany({
-        where:{
-            friendTwoId: profile.id,
-            status: "PENDING"
-        },
-        select:{
-            friendOneId: true,
-        }
-    })
+        return () => clearInterval(intervalId);
+    }, []);
 
-    const pending2Ids = pending2.map(p => p.friendOneId);
-    
-    const users = await db.profile.findMany({
-        where:{
-            id: {
-                in: [...pendingIds, ...pending2Ids]
-            }
-        },
-        select: {
-            id: true,
-            name: true,
-            imageUrl: true
-        }
-    });
+    if (loading == true) {
+        return (
+            <div className="text-md font-semibold px-3 h-14 ">
+                <div>
+                    <FriendSearch/>
+                    <p className="my-5 font-semibold text-sm text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition">
+                        PENDIGN REQUESTS
+                    </p>
+                    <div className="flex flex-col justify-center items-center">
+                        <Loader2 className="h-7 w-7 text-zinc-500 animate-spin my-4" />
+                        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                            Loading ...
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (users.length === 0 && loading == false) {
+        return (
+            <div className="text-md font-semibold px-3 h-full ">
+                <div>
+                    <FriendSearch/>
+                    <p className="my-5 font-semibold text-sm text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition">
+                        PENDIGN REQUESTS
+                    </p>
+                    <div className="flex flex-col justify-center items-center text-zinc-500 dark:text-zinc-400 mt-20">
+                        <p>You have no pending requests</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
  
     return (
         <div className="text-md font-semibold px-3 h-14 ">
             <div>
                 <FriendSearch/>
                 <p className=" my-5 font-semibold text-sm text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition">
-                    Pending Requests
+                    PENDIGN REQUESTS
                 </p>
                 <ScrollArea className="flex px-3">
                     {!!users?.length &&(
                         <div className="mb-2">
-                            <div className="space-y-[2px] ">
-                                {users.map((user) => {
-                                    const type = pendingIds.includes(user.id) ? "Pending1" : "Pending2";
-                                    return (
-                                        <div key={user.id} className="border-t border-zinc-200 dark:border-zinc-700">
-                                            <DmsUser profile={user} type={type}/>
-                                        </div>
-                                    );
-                                })}
+                            <div className="space-y-[2px} ">
+                            {users.map((user) => (
+                                <div key={user.id} className="border-t border-zinc-200 dark:border-zinc-700">
+                                    <DmsUser profile={user} type={user.type}/>
+                                </div>
+                            ))}
                             </div>
                         </div>
                     )}

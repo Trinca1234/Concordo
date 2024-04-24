@@ -41,7 +41,7 @@ export const ReportMessageModal = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }; 
 
     return (
         <Dialog open={isModalOpen} onOpenChange={onClose}>
