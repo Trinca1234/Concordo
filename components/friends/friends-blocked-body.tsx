@@ -17,7 +17,6 @@ export const FriendsBlockedBody = () => {
 
     async function fetchUsers() {
         try {
-            console.log("fetchou");
             const url = qs.stringifyUrl({
                 url: "/api/friends/getUsers",
                 query: {

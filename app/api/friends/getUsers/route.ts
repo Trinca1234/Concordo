@@ -28,6 +28,10 @@ export async function GET(
             return new NextResponse("Status missing", { status: 400 });
         }
 
+        if (!profile) {
+            return new NextResponse("Profile missing", { status: 400 });
+        }
+
         const status: FriendshipStatus = statusParam as FriendshipStatus;
 
         if(statusParam == "ACCEPTED"){
@@ -37,11 +41,16 @@ export async function GET(
                 },
                 select:{ 
                     friendTwoId: true,
+                    friendOneId: true
                 }
             })
             
             blockedIds = blocked1.map(p => {
-                return p.friendTwoId;
+                if (p.friendOneId === profile.id) {
+                    return p.friendTwoId;
+                } else {
+                    return p.friendOneId;
+                }
             });
         }else if(statusParam == "PENDING"){
             let blockedIDS: { friendtwo: string; type: string; }[] = [];

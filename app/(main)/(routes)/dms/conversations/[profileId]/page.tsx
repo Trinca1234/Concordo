@@ -41,7 +41,7 @@ const MemberIdPage = async ({
     const conversation = await getOrCreateConversation(profile.id, params.profileId);
   
     if (!conversation) {
-      return redirect(`/dms`);
+      return redirect(`/dms/friends/all`);
     }
   
     const { profileOne, profileTwo } = conversation;

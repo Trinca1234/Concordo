@@ -17,14 +17,13 @@ export const FriendsAllBody = () => {
 
     async function fetchUsers() {
         try {
-            console.log("fetchou");
             const url = qs.stringifyUrl({
                 url: "/api/friends/getUsers",
                 query: {
                     status: "ACCEPTED"
                 }
             });
-        
+         
             const users = await axios.get(url);
             setUsers(users.data);
             setLoading(false);

@@ -27,7 +27,6 @@ export const FriendsPendingBody = () => {
             });
         
             const users = await axios.get(url);
-            console.log("Users:", users);
             setUsers(users.data);
             setLoading(false);
         } catch (error) {

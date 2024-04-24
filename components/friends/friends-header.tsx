@@ -33,7 +33,6 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
 
             try {
                 const response = await axios.get(url);
-                console.log(response);
             } catch (error) {
                 console.error('Error fetching friend requests:', error);
             }
