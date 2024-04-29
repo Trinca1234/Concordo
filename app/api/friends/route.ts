@@ -50,6 +50,28 @@ export async function POST(
                 senderId: sender
             },
         });
+
+        if(friendship){
+            if(friendOneId == sender){
+                const notification = await db.notifications.create({
+                    data:{
+                        recipientId: friendTwoId,
+                        status: "UNREAD",
+                        senderId: sender,
+                        content: "pending"
+                    }
+                })
+            }else{
+                const notification = await db.notifications.create({
+                    data:{
+                        recipientId: friendOneId,
+                        status: "UNREAD",
+                        senderId: sender,
+                        content: "pending"
+                    }
+                })
+            }
+        }
         
         return NextResponse.json(friendship);
     } catch (error) {

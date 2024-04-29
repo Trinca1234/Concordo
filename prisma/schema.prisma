@@ -29,6 +29,8 @@ model Profile {
   friendshipInitiated Friends[] @relation("FriendOne")
   friendshipReceived Friends[] @relation("FriendTwo")
 
+  notificationInitiated Notifications[] @relation("recipient")
+
   directMessages DirectMessage[]
   serverReports ServerReport[]
   reports MessageReport[]
@@ -268,4 +270,25 @@ model Friends {
   @@index([friendTwoId])
 
   @@unique([friendOneId, friendTwoId])
+}
+
+enum NotificationStatus {
+  READ
+  UNREAD
+}
+
+model Notifications {
+  id String @id @default(uuid())
+  status NotificationStatus
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  content String @db.Text
+
+  recipientId String
+  recipient Profile @relation("recipient", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  senderId String
+
+  @@index([recipientId])
 }

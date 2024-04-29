@@ -13,6 +13,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import qs from "query-string";
+import { DmsUser } from "../dms/dms-user";
+import { DropdownMenuLabel } from "../ui/dropdown-menu";
 
 interface FriendsHeaderProp {
     profile: Profile;
@@ -20,6 +22,30 @@ interface FriendsHeaderProp {
 
 
 export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{ 
+    const [notifications, setNotifications] = useState<{ id: string; name: string; imageUrl: string; content: String }[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    async function fetchNotifications() {
+        try {
+            const url = qs.stringifyUrl({
+                url: "/api/notifications/getNotifications",
+            });
+            
+            const response = await axios.get(url);
+            setNotifications(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching notifications:", error);
+            setLoading(false);
+        }
+    }
+    
+    useEffect(() => {
+        const intervalId = setInterval(fetchNotifications, 2000);
+        fetchNotifications();
+        return () => clearInterval(intervalId);
+    }, []);
+
 
     const {onOpen} = useModal();
 
@@ -118,37 +144,36 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
                         </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
+                    style={{ zIndex: 900 }}
                     className="w-56 mr-12 text-xs font-medium text-black dark:text-neutral-400 space-y-[2px] bg-zinc-700 dark:bg-zinc-900"
                     >
-                        {/* <DropdownMenuItem
-                        onClick={() => onOpen("invite")}
-                        className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm cursor-pointer"
-                        >
-                            Invite people
-                            <UserPlus
-                            className="h-4 w-4 ml-auto"
-                            />
-                        </DropdownMenuItem> */}
-                        {/* <DropdownMenuItem
-                        onClick={() => onOpen("editServer")}
-                        className="flex items-center px-3 py-2 text-sm cursor-pointer"
-                        >
-                            Server Settings
-                            <Settings
-                            className="h-4 w-4 ml-auto"
-                            />
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator/>  */}   
-                        {/* {data.map(({ id, name, icon }) => (
-                            <DropdownMenuItem
-                                key={id}
-                                onClick={() => onClick({ id, type: "profile" })}
-                                className="flex items-center px-3 py-2 text-sm cursor-pointer"
-                            >
-                                {icon}
-                                <span>{name}</span>
-                            </DropdownMenuItem>
-                        ))} */}
+                        
+                            {notifications.length > 0 ? (
+                                <>
+                                    <DropdownMenuLabel>Pending requests</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem
+                                        className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm"
+                                    >
+                                        <div className="mb-2">
+                                            <div className="space-y-[2px} ">
+                                                {notifications.map(user => (
+                                                    <div key={user.id} className="border-t border-zinc-200 dark:border-zinc-700">
+                                                        <DmsUser profile={user} type={"Pending3"}/>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </DropdownMenuItem>
+                                </>
+                            ) : (
+                                <DropdownMenuItem
+                                    className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm cursor-pointer"
+                                >
+                                    <span>No notifications</span>
+                                </DropdownMenuItem>
+                            )}
+                        
                         
                     </DropdownMenuContent>
                 </DropdownMenu>

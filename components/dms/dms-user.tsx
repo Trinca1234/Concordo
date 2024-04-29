@@ -29,7 +29,12 @@ export const DmsUser = ({
     const { onOpen } = useModal();
 
     const onClick = (type: string) => {
-        if(type === "Accepted" || "users"){
+        if(type === "Pending3"){
+            console.log("pending");
+            router.push(`/dms/friends/pending`);
+        }
+        if(type === "Accepted"|| type === "users"){
+            console.log("conversation");
             router.push(`/dms/conversations/${profile.id}`)
         }
         else{
@@ -38,8 +43,6 @@ export const DmsUser = ({
     }
 
     async function onAccept() {
-
-        console.log("entrou accept")
         try {
             const url =  qs.stringifyUrl({
                 url: "/api/friends/acceptFriendRequest",
@@ -59,8 +62,6 @@ export const DmsUser = ({
     }
 
     async function onDecline() {
-
-        console.log("entrou decline")
         try {
             const url =  qs.stringifyUrl({
                 url: "/api/friends/declineFriendRequest",

@@ -43,7 +43,7 @@ export async function PATCH(
                 return new NextResponse("Non existent friendship", { status: 200 });
             }
 
-            await db.friends.update({
+            const update = await db.friends.update({
                 where:{
                     id: friendship.id,
                 },
@@ -52,10 +52,33 @@ export async function PATCH(
                     senderId: senderId
                 }
             })
+
+            if(update){
+                if(friendOneId == senderId){
+                    const notification = await db.notifications.create({
+                        data:{
+                            recipientId: friendTwoId,
+                            status: "UNREAD",
+                            senderId: senderId,
+                            content: "pending"
+                        }
+                    })
+                }else{
+                    const notification = await db.notifications.create({
+                        data:{
+                            recipientId: friendOneId,
+                            status: "UNREAD",
+                            senderId: senderId,
+                            content: "pending"
+                        }
+                    })
+                }
+            }
+
             return NextResponse.json(friendship);
         }
 
-        await db.friends.update({
+        const update = await db.friends.update({
             where:{
                 id: friendship.id,
             },
@@ -64,6 +87,28 @@ export async function PATCH(
                 senderId: senderId
             }
         })
+
+        if(update){
+            if(friendOneId == senderId){
+                const notification = await db.notifications.create({
+                    data:{
+                        recipientId: friendTwoId,
+                        status: "UNREAD",
+                        senderId: senderId,
+                        content: "pending"
+                    }
+                })
+            }else{
+                const notification = await db.notifications.create({
+                    data:{
+                        recipientId: friendOneId,
+                        status: "UNREAD",
+                        senderId: senderId,
+                        content: "pending"
+                    }
+                })
+            }
+        }
         
         return NextResponse.json(friendship);
     } catch (error) {

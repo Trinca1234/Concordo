@@ -22,9 +22,7 @@ const SetupPage = async () => {
         return redirect(`/servers/${server.id}`);
     }
 
-    return ( 
-    <InitialModal/>
-    );
+    return redirect(`/dms/friends/all`);
 }
  
 export default SetupPage;

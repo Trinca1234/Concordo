@@ -16,13 +16,8 @@ export async function GET(
     try {
         const {searchParams} = new URL(req.url);
         const profile = await currentProfile();
-        const senderId = profile?.id;
         const statusParam = searchParams.get("status");
         let blockedIds
-
-        if (!senderId) {
-            return new NextResponse("Sender id missing", { status: 400 });
-        }
 
         if (!statusParam) {
             return new NextResponse("Status missing", { status: 400 });
@@ -37,7 +32,11 @@ export async function GET(
         if(statusParam == "ACCEPTED"){
             const blocked1 = await db.friends.findMany({
                 where:{
-                    status: status
+                    status: status,
+                    OR: [
+                        { friendOneId: profile.id },
+                        { friendTwoId: profile.id }
+                    ]
                 },
                 select:{ 
                     friendTwoId: true,
@@ -56,19 +55,35 @@ export async function GET(
             let blockedIDS: { friendtwo: string; type: string; }[] = [];
             const blocked1 = await db.friends.findMany({
                 where:{
-                    senderId: senderId,
-                    status: status
+                    status: status,
+                    OR: [
+                        { friendOneId: profile.id },
+                        { friendTwoId: profile.id }
+                    ]
                 },
                 select:{ 
                     friendTwoId: true,
-                    friendOneId: true
+                    friendOneId: true,
+                    senderId: true
                 }
             })
             
             blockedIDS = blocked1.map(p => {
-                if (p.friendOneId === senderId) {
+                if (p.friendOneId === profile.id && profile.id === p.senderId) {
                     const repo = {
                         friendtwo: p.friendTwoId,
+                        type: "Pending1"
+                    }
+                    return repo;
+                } else if(p.friendOneId === profile.id && profile.id != p.senderId) {
+                    const repo = {
+                        friendtwo: p.friendTwoId,
+                        type: "Pending2"
+                    }
+                    return repo;
+                } else if(p.friendTwoId === profile.id && profile.id === p.senderId) {
+                    const repo = {
+                        friendtwo: p.friendOneId,
                         type: "Pending1"
                     }
                     return repo;
@@ -106,7 +121,7 @@ export async function GET(
         }else{
             const blocked1 = await db.friends.findMany({
                 where:{
-                    senderId: senderId,
+                    senderId: profile.id,
                     status: status
                 },
                 select:{ 
@@ -116,7 +131,7 @@ export async function GET(
             })
             
             blockedIds = blocked1.map(p => {
-                if (p.friendOneId === senderId) {
+                if (p.friendOneId === profile.id) {
                     return p.friendTwoId;
                 } else {
                     return p.friendOneId;
