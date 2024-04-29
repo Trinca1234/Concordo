@@ -49,7 +49,7 @@ const ChannelIdPage = async ({
             type="channel"
             />
             {channel.type === ChannelType.TEXT && (
-                <>
+                <> 
                 <ChatMessages
                     member={member}
                     name={channel.name}

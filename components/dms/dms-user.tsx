@@ -29,7 +29,7 @@ export const DmsUser = ({
     const { onOpen } = useModal();
 
     const onClick = (type: string) => {
-        if(type === "Accepted"){
+        if(type === "Accepted" || "users"){
             router.push(`/dms/conversations/${profile.id}`)
         }
         else{

@@ -4,45 +4,57 @@ import qs from "query-string";
 
 export const getOrCreateConversation = async (profileOneId: string, profileTwoId: string) =>{
     let friendship = await findFriendship(profileOneId, profileTwoId)
-    console.log("entrou aqui 1");
-    if(friendship != "Hes already your friend"){
-        const friendship2 = await findFriendship(profileTwoId, profileOneId);
-        console.log("entrou aqui 2");
-        if(friendship2 != "Hes already your friend"){
+    let type = 1
+    if (typeof friendship === 'string') {
+        console.log("é string")
+        return null;
+    }
+    if(!friendship){
+        friendship = await findFriendship(profileTwoId, profileOneId);
+        if (typeof friendship === 'string') {
             return null;
-        }else{
-            let conversation = await findConversation(profileOneId, profileTwoId) || await findConversation(profileTwoId, profileOneId);
+        }
+        type = 2
+    }
+    if(!friendship){
+        return null;
+    }
+    if(friendship.status == "ACCEPTED"){
+        if(type == 1){
+            let conversation = await findConversation(profileOneId, profileTwoId);
             if(!conversation){
                 conversation = await createNewConversation(profileOneId, profileTwoId);
             }
-            return conversation;
+        
+            return conversation;    
+        }else{
+            let conversation = await findConversation(profileTwoId, profileOneId);
+            if(!conversation){
+                conversation = await createNewConversation(profileTwoId, profileOneId);
+            }
+        
+            return conversation; 
         }
+    }else{
+        return null
     }
-    let conversation = await findConversation(profileOneId, profileTwoId) || await findConversation(profileTwoId, profileOneId);
-
-    if(!conversation){
-        conversation = await createNewConversation(profileOneId, profileTwoId);
-    }
-
-    return conversation;
 }
 
 const findFriendship = async (friendOneId: string, friendTwoId: string) => {
     try{
-        const url =  qs.stringifyUrl({
-            url: "/api/friends/findFriendship",
-            query: {
-                OneId: friendOneId,
-                TwoId: friendTwoId
-            }
+        const friendship = await db.friends.findFirst({
+            where: {
+                AND: [
+                    { friendOneId: friendOneId },
+                    { friendTwoId: friendTwoId },
+                ]
+            },
         });
 
-        const response = await axios.get(url);
-
-        return response.data;
+        return friendship
 
     } catch (error: any) {
-        console.error("Error creating friendship:", error);
+        console.error("Error finding friendship:", error);
         if (axios.isAxiosError(error)) {
             return error;
         } else {

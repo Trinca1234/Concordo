@@ -5,35 +5,34 @@ import { useEffect, useState } from "react";
 import { CommandDialog, CommandEmpty, CommandInput, CommandList, CommandGroup, CommandItem } from "@/components/ui/command";
 import { useParams, useRouter } from "next/navigation";
 
-/* interface ServerSearchProps{
+interface FriendsSearchProps{
     data: {
         label: string;
-        type: "channel" | "member",
+        type: "all" | "pending" | "blocked",
         data: {
-            icon: React.ReactNode;
             name: string;
             id: string;
         }[] | undefined
     }[]
-} */
+}
 
-export const FriendSearch = (/* {
+export const FriendSearch = ({
     data
-}: ServerSearchProps */) =>{
+}: FriendsSearchProps) =>{
     const [open, setOpen] = useState(false);
     const router = useRouter();
     const params = useParams();
 
-    /* const onClick = ({id, type}: {id: string, type:"channel" | "member"}) =>{
+    const onClick = ({id, type}: {id: string, type:"all" | "pending" | "blocked"}) =>{
         setOpen(false);
-        if(type === "member"){
+        if(type === "all"){
             return router.push(`/servers/${params?.serverId}/conversations/${id}`);
         }
 
-        if(type === "channel"){
+        if(type === "pending"){
             return router.push(`/servers/${params?.serverId}/channels/${id}`);
         }
-    } */
+    }
 
     return(
         <>
@@ -46,27 +45,26 @@ export const FriendSearch = (/* {
             <Search className="w-4 h-4 text-zinc-500 dark:text-zinc-400 mr-2 ml-auto flex items-center"/>
         </button>
         <CommandDialog open={open} onOpenChange={setOpen}>
-            <CommandInput placeholder="Search all channels and members"/>
+            <CommandInput placeholder="Search your friends"/>
             <CommandList>
                 <CommandEmpty>
                     No results found
                 </CommandEmpty>
-                {/* {data.map(({label, type, data})=>{
+                {data.map(({label, type, data})=>{
                     if(!data?.length) return null;
 
                     return (
                         <CommandGroup key={label} heading={label}>
-                            {data?.map(({id, icon, name})=>{
+                            {data?.map(({id, name})=>{
                                 return(
                                     <CommandItem key={id} onSelect={()=> onClick({id, type})}>
-                                        {icon}
                                         <span>{name}</span>
                                     </CommandItem>
                                 )
                             })}
                         </CommandGroup>
                     )
-                })} */}
+                })}
             </CommandList>
         </CommandDialog>
         </>

@@ -193,7 +193,7 @@ export const ServerSidebar = async ({
                         <div className="space-y-[2px}">
                             {members.map((member) => (
                                 member.status && member.status === true && (
-                                    <ServerMember 
+                                    <ServerMember
                                         key={member.id}
                                         member={member}
                                         server={server}

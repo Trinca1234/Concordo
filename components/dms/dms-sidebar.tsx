@@ -22,7 +22,7 @@ export const DmsSidebar = () =>{
                 query: {
                     status: "ACCEPTED"
                 }
-            });
+            }); 
          
             const users = await axios.get(url);
             setUsers(users.data);
@@ -42,7 +42,17 @@ export const DmsSidebar = () =>{
     if (loading == true) {
         return(
             <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
-                <DmsSearch/>
+                <DmsSearch
+                    data={[
+                        {
+                            label: "All friends",
+                            data: users?.map((user)=>({
+                                id: user.id,
+                                name: user.name,
+                            }))
+                        },
+                    ]}
+                />
                 <ScrollArea className="flex px-3">
                     <div className="mt-2">
                     </div>
@@ -59,7 +69,17 @@ export const DmsSidebar = () =>{
     if (users.length === 0 && loading == false) {
         return(
             <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
-                <DmsSearch/>
+                <DmsSearch
+                    data={[
+                        {
+                            label: "All friends",
+                            data: users?.map((user)=>({
+                                id: user.id,
+                                name: user.name,
+                            }))
+                        },
+                    ]}
+                />
                 <ScrollArea className="flex px-3">
                     <div className="mt-2">
                     </div>
@@ -74,7 +94,17 @@ export const DmsSidebar = () =>{
 
     return(
         <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
-            <DmsSearch/>
+            <DmsSearch
+                data={[
+                    {
+                        label: "All friends",
+                        data: users?.map((user)=>({
+                            id: user.id,
+                            name: user.name,
+                        }))
+                    },
+                ]}
+            />
             <ScrollArea className="flex px-3">
                 <div className="mt-2">
                 </div>
