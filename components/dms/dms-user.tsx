@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Member, MemberRole, Profile, Server } from "@prisma/client"
 import { Ban, Check, CircleEllipsis, CircleEllipsisIcon, Flag, Search, Settings, ShieldAlert, ShieldCheck, ShieldMinus, UserPlus, UserRoundX, X } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { useMediaQuery } from 'react-responsive';
 import { UserAvatar } from "../user-avatar";
 import { useModal } from "@/hooks/use-modal-store";
 import qs from "query-string";
@@ -122,14 +123,34 @@ export const DmsUser = ({
         }
     }
 
+    const isDesktop = useMediaQuery({ query: '(min-width: 550px)' });
+
     return (
         <div className={cn("group px-2 py-2 rounded-mb flex items-center gap-x-2 w-full hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1", params?.profileId === profile.id && "bg-zinc-700/20 dark:bg-zinc-700")}>
-            <button onClick={() => onClick(type)} className="flex items-center">
-                <UserAvatar src={profile.imageUrl} className="h-8 w-8 mr-2 md:h-8 md:w-8" />
-                <p className={cn("font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition", params?.profileId === profile.id && "text-primary dark:text-zinc-200 dark:group-hover:text-white")}>
-                    {profile.name}
-                </p>
-            </button> 
+            {type !== "users" &&(
+                <button onClick={() => onClick(type)} className="flex items-center">
+                    <UserAvatar src={profile.imageUrl} className="h-8 w-8 mr-2 md:h-8 md:w-8" />
+                    <p className={cn(
+                        "font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition",
+                        params?.profileId === profile.id && "text-primary dark:text-zinc-200 dark:group-hover:text-white",
+                        isDesktop && profile.name.length > 6 && 'truncate'
+                    )}>
+                        {!isDesktop && profile.name.length > 25 ? `${profile.name.slice(0, 25)}...` : profile.name}
+                    </p>
+                </button>
+            )}
+            {type === "users" && (
+                <button onClick={() => onClick(type)} className="flex items-center">
+                    <UserAvatar src={profile.imageUrl} className="h-8 w-8 mr-2 md:h-8 md:w-8" />
+                    <p className={cn(
+                        "font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition",
+                        params?.profileId === profile.id && "text-primary dark:text-zinc-200 dark:group-hover:text-white",
+                        isDesktop && profile.name.length > 6 && 'truncate'
+                    )}>
+                        {!isDesktop && profile.name.length > 14 ? `${profile.name.slice(0, 14)}...` : profile.name}
+                    </p>
+                </button>
+            )}
             {type === "Accepted" && (
                 <>
                     <button onClick={() => onOpen("reportMessage", {

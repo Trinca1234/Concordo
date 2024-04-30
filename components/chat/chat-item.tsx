@@ -25,6 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
+import { useMediaQuery } from "react-responsive";
 
 interface ChatItemProps{
     id: string;
@@ -77,6 +78,7 @@ export const ChatItem = ({
             filter = new Filter();
             filter.addWords(
                 "fodase",
+                "foder",
                 "caralho",
                 "badalhoca",
                 "badalhoco",
@@ -297,6 +299,8 @@ export const ChatItem = ({
     const isPdf = fileType === "pdf" && fileUrl;
     const isImage = !isPdf && fileUrl;
 
+    const isDesktop = useMediaQuery({ query: '(min-width: 550px)' });
+
     return(
         <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
             <div className="group flex gap-x-2 items-start w-ful">
@@ -307,7 +311,7 @@ export const ChatItem = ({
                     <div className="flex items-center gap-x-2">
                         <div className="flex item-center">
                             <p onClick={onMemberClick} className="font-semibold text-sm hover:underline cursor-pointer">
-                                {member.profile.name}
+                            {!isDesktop && member.profile.name.length > 18 ? `${member.profile.name.slice(0, 18)}...` : member.profile.name}
                             </p>
                             <ActionTooltip label={member.role}>
                                 {roleIconMap[member.role]}
@@ -404,7 +408,7 @@ export const ChatItem = ({
                             className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition"
                             />
                         </ActionTooltip>
-                    )}
+                    )} 
                     <ActionTooltip label="Delete">
                         <Trash
                         onClick={()=> onOpen("deleteMessage", {
@@ -414,10 +418,14 @@ export const ChatItem = ({
                         className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition"
                         />
                     </ActionTooltip>
+                </div>
+            )}
+            {!isOwner && (
+                <div className="hidden group-hover:flex items-center gap-x-2 absolute p-1 -top-2 right-5 bg-white dark:bg-zinc-800 border rounded-sm">
                     <ActionTooltip label="Report">
                         <Flag
                         onClick={() => onOpen("reportMessage", {
-                            apiUrl: `/api/messages/reports`,
+                            apiUrl: `/api/direct-messages/reports`,
                             query: socketQuery,
                             ids: id
                         })}

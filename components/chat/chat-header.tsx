@@ -17,13 +17,16 @@ export const ChatHeader = ({
     name,
     type,
     imageUrl
-}: ChatHeaderProps) =>{ 
+}: ChatHeaderProps) =>{
     return( 
         <div className="text-md font-semibold px-3 flex items-center h-12 border-neutral-200 dark:border-neutral-800 border-b-2">
             {type === "channel" && (
                 <>
                     <MobileTogle serverId={serverId}/>
                     <Hash className="w-5 h-5 text-zinc-500 dark:text-zinc-400 mr-2"/>
+                    <p className="font-semibold text-md text-black dark:text-white">
+                        {name}
+                    </p>
                 </>
             )}
             {type === "conversation" && (
@@ -33,11 +36,11 @@ export const ChatHeader = ({
                     src={imageUrl}
                     className="h-8 w-8 mr-2"
                     />
+                    <p className="font-semibold text-md text-black dark:text-white">
+                        {name.split(' ')[0]}
+                    </p>
                 </>
             )}
-            <p className="font-semibold text-md text-black dark:text-white">
-                {name}
-            </p>
             <div className="ml-auto flex items-center">
                 {type === "conversation" && (
                     <ChatVideoButton/>

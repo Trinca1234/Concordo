@@ -34,7 +34,7 @@ export const ReportMessageModal = () => {
             });
 
             await axios.post(url);
-
+ 
             onClose();
         } catch (error) {
             console.log(error);

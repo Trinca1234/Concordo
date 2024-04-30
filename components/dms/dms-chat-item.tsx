@@ -25,6 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
+import { useMediaQuery } from "react-responsive";
 
 interface ChatConversationItemProps{
     directMessage: DirectMessage,
@@ -289,6 +290,7 @@ export const ChatConversationItem = ({
     const isPdf = fileType === "pdf" && fileUrl;
     const isImage = !isPdf && fileUrl;
 
+    const isDesktop = useMediaQuery({ query: '(min-width: 550px)' }); 
 
     return (
         <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
@@ -300,7 +302,7 @@ export const ChatConversationItem = ({
                     <div className="flex items-center gap-x-2">
                         <div className="flex item-center">
                             <p onClick={onMemberClick} className="font-semibold text-sm hover:underline cursor-pointer">
-                                {profile.name}
+                                {!isDesktop && profile.name.length > 18 ? `${profile.name.slice(0, 18)}...` : profile.name}
                             </p>
                         </div>
                         <span className="text-xm text-zinc-500 dark:text-zinc-400">
