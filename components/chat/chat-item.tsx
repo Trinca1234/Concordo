@@ -68,22 +68,22 @@ export const ChatItem = ({
 
     function containsEmoji(text: string) {
         const emojiPattern = /[\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
-    
         return emojiPattern.test(text);
     }
 
     if (content !== null && content !== undefined) {
-        if(!containsEmoji(content)){
+        if(!containsEmoji(content) && !content.includes("ç")){
             var Filter = require('bad-words'),
             filter = new Filter();
             filter.addWords(
-                "aborto",
                 "fodase",
                 "caralho",
                 "badalhoca",
                 "badalhoco",
                 "badalhoquices",
                 "badamerda",
+                "négão",
+                "negao",
                 "cabra",
                 "cabrao",
                 "cabrão",
@@ -95,7 +95,6 @@ export const ChatItem = ({
                 "ânus",
                 "bunda",
                 "rabuda",
-                "asses",
                 "idiota",
                 "idiotas",
                 "testiculos",
@@ -118,7 +117,6 @@ export const ChatItem = ({
                 "peitos",
                 "buceta",
                 "vagabundo",
-                "comedor de tapetes",
                 "fenda",
                 "cipa",
                 "clitóris",
@@ -136,8 +134,6 @@ export const ChatItem = ({
                 "dildo",
                 "dildos",
                 "dink",
-                "dog-filho da puta",
-                "sapatona",
                 "ejacular",
                 "ejaculado",
                 "ejacula",
@@ -157,7 +153,6 @@ export const ChatItem = ({
                 "fode",
                 "fode-te",
                 "fodete",
-                "empacotador de fudge",
                 "maldito",
                 "maldita",
                 "inferno",
@@ -166,11 +161,8 @@ export const ChatItem = ({
                 "bate uma",
                 "bater uma",
                 "kock",
-                "luxúria",
-                "cobiçoso",
                 "masoquista",
                 "masturbar",
-                "filho da puta",
                 "nazista",
                 "negro",
                 "niggers",
@@ -182,9 +174,6 @@ export const ChatItem = ({
                 "xixi",
                 "puto",
                 "pisser",
-                "mijar",
-                "mijando",
-                "não me chateies",
                 "cocô",
                 "cona",
                 "piriquita",
@@ -204,7 +193,6 @@ export const ChatItem = ({
                 "retardar",
                 "rimming",
                 "sádico",
-                "aparafusar",
                 "escroto",
                 "sêmen",
                 "sexo",
@@ -219,8 +207,6 @@ export const ChatItem = ({
                 "vagabunda",
                 "vadias",
                 "smegma",
-                "sujeira",
-                "arrebatar",
                 "spac",
                 "coragem",
                 "testículo",

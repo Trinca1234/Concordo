@@ -8,12 +8,9 @@ import{
 import { Button } from "@/components/ui/button";
 import { NavigationSidebar } from "@/components/navigation/navigation-sidebar";
 import { ServerSidebar } from "@/components/server/server-sidebar";
+import { DmsSidebar } from "./dms/dms-sidebar";
 
-export const MobileTogle = ({
-    serverId
-}:{
-    serverId: string;
-}) =>{
+export const DmMobileTogle = () =>{
     return(
         <Sheet>
             <SheetTrigger asChild>
@@ -25,7 +22,7 @@ export const MobileTogle = ({
                 <div className="w-[72px]">
                     <NavigationSidebar/>
                 </div>
-                <ServerSidebar serverId={serverId}/>
+            <DmsSidebar/>
             </SheetContent>
         </Sheet>
     )

@@ -1,6 +1,5 @@
 "use client"
 import { Bell, ChevronDown, Hash, HelpCircle, Inbox, Settings, UserPlus } from "lucide-react";
-import { MobileTogle } from "@/components/mobile-toggle";
 import { UserAvatar } from "@/components/user-avatar";
 import { SocketIndicator } from "@/components/socket-indicator";
 import { UserRound } from "lucide-react";
@@ -15,15 +14,15 @@ import axios from 'axios';
 import qs from "query-string";
 import { DmsUser } from "../dms/dms-user";
 import { DropdownMenuLabel } from "../ui/dropdown-menu";
+import { DmMobileTogle } from "../mobile-toggle-dm";
 
 interface FriendsHeaderProp {
     profile: Profile;
 }
-
+ 
 
 export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{ 
     const [notifications, setNotifications] = useState<{ id: string; name: string; imageUrl: string; content: String }[]>([]);
-    const [loading, setLoading] = useState(true);
 
     async function fetchNotifications() {
         try {
@@ -33,10 +32,8 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
             
             const response = await axios.get(url);
             setNotifications(response.data);
-            setLoading(false);
         } catch (error) {
             console.error("Error fetching notifications:", error);
-            setLoading(false);
         }
     }
     
@@ -51,22 +48,6 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
 
     const router = useRouter();
 
-    useEffect(() => {
-        const fetchFriendRequests = async () => {
-            const url = qs.stringifyUrl({
-                url: "/api/friends" || "",
-            });
-
-            try {
-                const response = await axios.get(url);
-            } catch (error) {
-                console.error('Error fetching friend requests:', error);
-            }
-        };
-
-        fetchFriendRequests();
-    }, []);
-
     const onClickButton = (route: string) => {
         router.push(`/dms/friends/${route}`);
     }
@@ -76,8 +57,9 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
     }
 
     return (
-        <div className="text-md font-semibold px-3 flex items-center h-14 border-neutral-200 dark:border-neutral-800 border-b-2">
-            <div className="h-8 w-8 mr-2 mt-1">
+        <div className="text-md font-semibold px-3 flex items-center h-12 border-neutral-200 dark:border-neutral-800 border-b-2">
+            <DmMobileTogle />
+            <div className=" hidden md:flex h-8 w-8 mr-2 mt-1">
                 <UserRound />
             </div>
             <p className="font-semibold text-md text-black dark:text-white">
@@ -92,7 +74,7 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
             />
             <button
                 onClick={() => onClickButton('all')}
-                className={"group px-2 py-2 mx-5 rounded-mb flex items-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1 "}
+                className={" hidden md:flex group px-2 py-2 mx-5 rounded-mbitems-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1 "}
             >
                 <p className={"font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition"}>
                     All
@@ -100,7 +82,7 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
             </button>
             <button
                 onClick={() => onClickButton('pending')}
-                className={"group px-2 py-2 mx-5 rounded-mb flex items-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1 "}
+                className={" hidden md:flex group px-2 py-2 mx-5 rounded-mb items-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1 "}
             >
                 <p className={"font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition"}>
                     Pending
@@ -108,7 +90,7 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
             </button>
             <button
                 onClick={() => onClickButton('blocked')}
-                className={"group px-2 py-2 mx-5 rounded-mb flex items-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1 "}
+                className={" hidden md:flex group px-2 py-2 mx-5 rounded-mb items-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1 "}
             >
                 <p className={"font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition"}>
                     Blocked
@@ -118,7 +100,7 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
                 onClick={() => onOpen("addFriend", {
                     ids: profile.id
                 })}
-                className={"group px-2 py-2 mx-5 rounded-mb flex items-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1 "}
+                className={"group px-2 py-2 md:mx-5 rounded-mb flex items-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1 "}
             >
                 <p className={"font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition"}>
                     Add Friend
@@ -138,9 +120,16 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
                     asChild
                     >
                         <button
-                        className="w-full text-md font-semibold px-3 flex items-center h-12 border-neutral-200 dark:border-neutral-800 border-b-2 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"
+                        className="w-full text-md font-semibold px-3 flex items-center h-12  hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"
                         >
-                            <Bell className=" mx-3"/>
+                            {notifications.length > 0 ? (
+                                <div className="relative">
+                                    <Bell className="mx-2"/>
+                                    <span className="bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center absolute -top-1 -right-1">{notifications.length}</span>
+                                </div>
+                            ) : (
+                                <Bell className=" mx-2"/>
+                            )}
                         </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent

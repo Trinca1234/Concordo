@@ -58,7 +58,8 @@ export async function PATCH(
                     ]
                 },
                 data: {
-                    status: "READ"
+                    status: "READ",
+                    content: "denied"
                 }
             });
     
@@ -88,7 +89,8 @@ export async function PATCH(
                 ]
             },
             data: {
-                status: "READ"
+                status: "READ",
+                content: "denied"
             }
         });
 

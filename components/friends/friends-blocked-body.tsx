@@ -57,7 +57,7 @@ export const FriendsBlockedBody = () => {
                         <Search className="absolute w-4 h-4 text-zinc-500 dark:text-zinc-400 right-2 top-1/2 transform -translate-y-1/2"/>
                     </div>
                     <p className="my-5 font-semibold text-sm text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition">
-                        BLOCKED FRIENDS
+                        BLOCKED USERS
                     </p>
                     <div className="flex flex-col justify-center items-center">
                         <Loader2 className="h-7 w-7 text-zinc-500 animate-spin my-4" />

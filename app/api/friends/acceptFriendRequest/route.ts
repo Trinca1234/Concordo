@@ -44,9 +44,29 @@ export async function PATCH(
                     id: friendship.id,
                 },
                 data:{
-                    status: "ACCEPTED"
+                    status: "ACCEPTED" 
                 }
             })
+
+            const isUpdated = await db.notifications.updateMany({
+                where: {
+                    status: "UNREAD",
+                    content: "pending",
+                    OR: [
+                        { recipientId: profile.id, senderId: friendTwoId },
+                        { senderId: profile.id, recipientId: friendTwoId }
+                    ]
+                },
+                data: {
+                    status: "READ",
+                    content: "accepted"
+                }
+            });
+    
+            if(!isUpdated){
+                return new NextResponse("Error updating notification", { status: 401 });
+            }
+
             return NextResponse.json(friendship);
         }
 
@@ -58,6 +78,25 @@ export async function PATCH(
                 status: "ACCEPTED"
             }
         })
+
+        const isUpdated = await db.notifications.updateMany({
+            where: {
+                status: "UNREAD",
+                content: "pending",
+                OR: [
+                    { recipientId: profile.id, senderId: friendTwoId },
+                    { senderId: profile.id, recipientId: friendTwoId }
+                ]
+            },
+            data: {
+                status: "READ",
+                content: "accepted"
+            }
+        });
+
+        if(!isUpdated){
+            return new NextResponse("Error updating notification", { status: 401 });
+        }
         
         return NextResponse.json(friendship);
     } catch (error) {

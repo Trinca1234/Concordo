@@ -33,7 +33,7 @@ export async function GET(
                 }
             });
             if(senderProfile)
-            notificationsWithSenderProfiles.push({
+            notificationsWithSenderProfiles.push({ 
                 id: notification.id,
                 name: senderProfile.name,
                 imageUrl: senderProfile.imageUrl,

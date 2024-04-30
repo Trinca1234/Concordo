@@ -113,7 +113,7 @@ export const DmsSidebar = () =>{
                     <div className="mb-2">
                         <div className="flex items-center justify-between py-2">
                             <p className="text-xs uppercase font-semibold text-zinc-500 dark:text-zinc-400">
-                                Users
+                                Friends
                             </p>
                         </div>
                         <div className="space-y-[2px}">

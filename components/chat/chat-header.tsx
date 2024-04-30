@@ -3,6 +3,7 @@ import { MobileTogle } from "@/components/mobile-toggle";
 import { UserAvatar } from "@/components/user-avatar";
 import { SocketIndicator } from "@/components/socket-indicator";
 import { ChatVideoButton } from "./chat-video-button";
+import { DmMobileTogle } from "../mobile-toggle-dm";
 
 interface ChatHeaderProps{
     serverId: string;
@@ -16,7 +17,7 @@ export const ChatHeader = ({
     name,
     type,
     imageUrl
-}: ChatHeaderProps) =>{
+}: ChatHeaderProps) =>{ 
     return( 
         <div className="text-md font-semibold px-3 flex items-center h-12 border-neutral-200 dark:border-neutral-800 border-b-2">
             {type === "channel" && (
@@ -26,10 +27,13 @@ export const ChatHeader = ({
                 </>
             )}
             {type === "conversation" && (
-                <UserAvatar 
-                src={imageUrl}
-                className="h-8 w-8 mr-2"
-                />
+                <>
+                    <DmMobileTogle/>
+                    <UserAvatar 
+                    src={imageUrl}
+                    className="h-8 w-8 mr-2"
+                    />
+                </>
             )}
             <p className="font-semibold text-md text-black dark:text-white">
                 {name}
