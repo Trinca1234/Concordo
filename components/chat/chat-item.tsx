@@ -425,7 +425,7 @@ export const ChatItem = ({
                     <ActionTooltip label="Report">
                         <Flag
                         onClick={() => onOpen("reportMessage", {
-                            apiUrl: `/api/direct-messages/reports`,
+                            apiUrl: `/api/messages/reports`,
                             query: socketQuery,
                             ids: id
                         })}

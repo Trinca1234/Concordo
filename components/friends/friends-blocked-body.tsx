@@ -50,7 +50,7 @@ export const FriendsBlockedBody = () => {
 
     if (loading == true) {
         return (
-            <div className="text-md font-semibold px-3 h-14 ">
+            <div className="text-md mt-4 font-semibold px-3 h-14 ">
                 <div>
                     <div className="relative flex items-center">
                         <Input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search by name" className="group px-2 py-4 rounded-md flex items-center gap-x-2 w-full bg-zinc-800 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"/>
@@ -72,7 +72,7 @@ export const FriendsBlockedBody = () => {
 
     if (users.length === 0 && loading == false) {
         return (
-            <div className="text-md font-semibold px-3 h-full ">
+            <div className="text-md mt-4 font-semibold px-3 h-full ">
                 <div>
                     <div className="relative flex items-center">
                         <Input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search by name" className="group px-2 py-4 rounded-md flex items-center gap-x-2 w-full bg-zinc-800 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"/>
@@ -90,7 +90,7 @@ export const FriendsBlockedBody = () => {
     }
  
     return (
-        <div className="text-md font-semibold px-3 h-14 ">
+        <div className="text-md mt-4 font-semibold px-3 h-14 ">
             <div>
                 <div className="relative flex items-center">
                     <Input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search by name" className="group px-2 py-4 rounded-md flex items-center gap-x-2 w-full bg-zinc-800 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"/>

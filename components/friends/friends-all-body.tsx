@@ -50,7 +50,7 @@ export const FriendsAllBody = () => {
 
     if (loading == true) {
         return (
-            <div className="text-md font-semibold px-3 h-14 ">
+            <div className="text-md mt-4 font-semibold px-3 h-14 ">
                 <div>
                     <div className="relative flex items-center">
                         <Input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search by name" className="group px-2 py-4 rounded-md flex items-center gap-x-2 w-full bg-zinc-800 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition" style={{ zIndex: 1000 }}/>
@@ -74,9 +74,9 @@ export const FriendsAllBody = () => {
         return (
             <div className="text-md font-semibold px-3 h-full ">
                 <div>
-                    <div className="relative flex items-center">
+                    <div className="relative mt-4 flex items-center">
                         <Input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search by name" className="group px-2 py-4 rounded-md flex items-center gap-x-2 w-full bg-zinc-800 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"/>
-                        <Search className="absolute w-4 h-4 text-zinc-500 dark:text-zinc-400 right-2 top-1/2 transform -translate-y-1/2"/>
+                        <Search className="absolute w-4 h-4 pt-8 text-zinc-500 dark:text-zinc-400 right-2 top-1/2 transform -translate-y-1/2"/>
                     </div>
                     <p className="my-5 font-semibold text-sm text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition">
                         ALL FRIENDS
@@ -92,7 +92,7 @@ export const FriendsAllBody = () => {
     return (
         <div className="text-md font-semibold px-3 h-14 ">
             <div>
-                <div className="relative flex items-center">
+                <div className="relative flex mt-4 items-center">
                     <Input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search by name" className="group px-2 py-4 rounded-md flex items-center gap-x-2 w-full bg-zinc-800 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"/>
                     <Search className="absolute w-4 h-4 text-zinc-500 dark:text-zinc-400 right-2 top-1/2 transform -translate-y-1/2"/>
                 </div>
