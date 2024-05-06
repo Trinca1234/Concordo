@@ -19,66 +19,40 @@ export async function GET(
             return new NextResponse("Profile missing", { status: 400 });
         }
 
-        const profileFriends = await db.friends.findMany({
+        const profileServers = await db.member.findMany({
             where:{
-                status: "ACCEPTED",
-                OR: [
-                    { friendOneId: profile.id },
-                    { friendTwoId: profile.id }
-                ]
+                profileId: profile.id,
+                status: true
             },
-            select:{ 
-                friendTwoId: true,
-                friendOneId: true
+            select:{
+                serverId: true
             }
         })
-        
-        const profileFriendIds = profileFriends.map(p => {
-            if (p.friendOneId === profile.id) {
-                return p.friendTwoId;
-            } else {
-                return p.friendOneId;
-            }
-        });
 
-        console.log(profile.id);
-        console.log(profileFriendIds);
-
-        const userFriends = await db.friends.findMany({
+        const userServers = await db.member.findMany({
             where:{
-                status: "ACCEPTED",
-                OR: [
-                    { friendOneId: userId },
-                    { friendTwoId: userId }
-                ]
+                profileId: userId,
+                status:true
             },
-            select:{ 
-                friendTwoId: true,
-                friendOneId: true
+            select:{
+                serverId: true
             }
         })
-        
-        const userFriendIds = userFriends.map(p => {
-            if (p.friendOneId === userId) {
-                return p.friendTwoId;
-            } else {
-                return p.friendOneId;
-            }
-        });
 
-        console.log(userId);
-        console.log(userFriendIds);
+        const profileServerIds = profileServers.map(server => server.serverId);
+        const userServerIds = userServers.map(server => server.serverId);
 
-        const mutualFriendIds = userFriendIds.filter(id => profileFriendIds.includes(id));
+        const mutualServerIds = profileServerIds.filter(id => userServerIds.includes(id));
 
-        if (mutualFriendIds.length === 0) {
+
+        if (mutualServerIds.length === 0) {
             return new NextResponse("No mutual friends found", { status: 201 });
         }
         
-        const users = await db.profile.findMany({
+        const Servers = await db.server.findMany({
             where:{
                 id: {
-                    in: mutualFriendIds,
+                    in: mutualServerIds,
                 }
             },
             select: {
@@ -88,12 +62,12 @@ export async function GET(
             }
         });
 
-        if(!users){
+        if(!Servers){
             return new NextResponse("No users found", { status: 401 });
         }
         
         
-        return NextResponse.json(users);
+        return NextResponse.json(Servers);
     } catch (error) {
         console.log("Error:", error);
         return new NextResponse("Internal Error", { status: 500 });

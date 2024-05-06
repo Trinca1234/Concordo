@@ -11,6 +11,7 @@ import { Separator } from "../ui/separator";
 import { ServerSection } from "./server-section";
 import { ServerChannel } from "./server-channel";
 import { ServerMember } from "./server-member";
+import { SocketIndicator } from "../socket-indicator";
 
 interface ServerSidebarProps{
     serverId: string;

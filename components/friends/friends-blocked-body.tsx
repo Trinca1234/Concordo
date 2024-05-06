@@ -106,7 +106,7 @@ export const FriendsBlockedBody = () => {
                                 {users.map((user) => {
                                     return (
                                         <div key={user.id} className="border-t border-zinc-200 dark:border-zinc-700">
-                                            <DmsUser profile={user} type={"Blocked"}/>
+                                            {/* <DmsUser profile={user} type={"Blocked"}/> */}
                                         </div>
                                     );
                                 })}

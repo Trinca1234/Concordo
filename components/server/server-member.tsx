@@ -34,18 +34,25 @@ const roleIconMap = {
 
 export const ServerMember = ({
     member,
-    server
 }: ServerMemberProps) =>{
     const params = useParams();
     const router = useRouter();
     const [mutualFriends, setMutualFriends] = useState<{ id: string; name: string; imageUrl: string; }[]>([]);
     const [mutualServers, setMutualServers] = useState<{ id: string; name: string; imageUrl: string; }[]>([]);
+    const [friendship, setFriendship] = useState(false);
 
     const icon = roleIconMap[member.role];
     const isDesktop = useMediaQuery({ query: '(min-width: 550px)' });
 
-    const SendFriendRequest = () =>{
-        router.push(`/dms/conversations/${member.profileId}`)
+    const SendFriendRequest = async () =>{
+        /* const url = qs.stringifyUrl({
+            url: "/api/socket/friendship",
+            query: {
+                id: member.profileId
+            }
+        }); 
+        
+        const friendship = await axios.get(url); */
     }
 
     const SendMessage = () =>{
@@ -56,25 +63,37 @@ export const ServerMember = ({
     async function fetchUsers() {
         try {
             const url = qs.stringifyUrl({
+                url: "/api/friends/isFriend",
+                query: {
+                    id: member.profileId
+                }
+            }); 
+            
+            const friendship = await axios.get(url);
+            console.log(member.profileId);
+            console.log(friendship.data);
+            setFriendship(friendship.data);
+
+            const url2 = qs.stringifyUrl({
                 url: "/api/friends/getMutualFriends",
                 query: {
                     id: member.profileId
                 }
             }); 
             
-            const users = await axios.get(url);
+            const users = await axios.get(url2);
             console.log(member.profileId);
             console.log(users);
             setMutualFriends(users.data);
 
-            const url2 = qs.stringifyUrl({
+            const url3 = qs.stringifyUrl({
                 url: "/api/friends/getMutualServers",
                 query: {
                     id: member.profileId
                 }
             }); 
             
-            const servers = await axios.get(url2);
+            const servers = await axios.get(url3);
             console.log(member.profileId);
             console.log(servers);
             setMutualServers(servers.data);
@@ -115,19 +134,16 @@ export const ServerMember = ({
                             src={member.profile.imageUrl}
                             className="h-8 w-8 md:h-24 md:w-24"
                         />
-                        {/* {friendship &&(
+                        {friendship == true &&(
+                            <Button onClick={fetchUsers} className=" bg-green-600 font-bold">
+                                Send Message
+                            </Button>
+                        )}
+                        {friendship != true &&(
                             <Button onClick={fetchUsers} className=" bg-green-600 font-bold">
                                 Send Friend Request
                             </Button>
                         )}
-                        {!friendship &&(
-                            <Button onClick={fetchUsers} className=" bg-green-600 font-bold">
-                                Send Friend Request
-                            </Button>
-                        )} */}
-                        <Button onClick={fetchUsers} className=" bg-green-600 font-bold">
-                            Send Friend Request
-                        </Button>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button className=" bg-transparent hover:bg-zinc-600">
@@ -194,22 +210,41 @@ export const ServerMember = ({
                             </TabsList>
                             <TabsContent value="Friends">
                                 <div className="flex items-center gap-x-2">
-                                    {mutualFriends.map(friend => (
-                                        <div key={friend.id} className="flex items-center">
-                                            <UserAvatar 
-                                                src={friend.imageUrl}
-                                                className="h-14 w-8 md:h-14 md:w-14"
-                                            />
-                                            <p className="font-semibold text-base pl-2 text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-300 dark:group-hover:text-zinc-300 transition">
-                                                {/* {isDesktop && friend.name.length > 20 ? `${friend.name.slice(0, 20)}...` : `${friend.name.slice(0, 14)}...`} */}
-                                                {friend.name}
-                                            </p>
-                                        </div>
-                                    ))}
+                                    {mutualFriends.length > 0 ? (
+                                        mutualFriends.map(friend => (
+                                            <div key={friend.id} className="flex items-center">
+                                                <UserAvatar 
+                                                    src={friend.imageUrl}
+                                                    className="h-14 w-8 md:h-14 md:w-14"
+                                                />
+                                                <p className="font-semibold text-base pl-2 text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-300 dark:group-hover:text-zinc-300 transition">
+                                                    {friend.name}
+                                                </p>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p>No mutual friends found.</p>
+                                    )}
                                 </div>
                             </TabsContent>
                             <TabsContent value="Servers">
-                                
+                                <div className="flex items-center gap-x-2">
+                                    {mutualServers.length > 0 ? (
+                                        mutualServers.map(server => (
+                                            <div key={server.id} className="flex items-center">
+                                                <UserAvatar 
+                                                    src={server.imageUrl}
+                                                    className="h-14 w-8 md:h-14 md:w-14"
+                                                />
+                                                <p className="font-semibold text-base pl-2 text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-300 dark:group-hover:text-zinc-300 transition">
+                                                    {server.name}
+                                                </p>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p>No mutual servers found.</p>
+                                    )}
+                                </div>
                             </TabsContent>
                         </Tabs>
                     </div>

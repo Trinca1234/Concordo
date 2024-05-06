@@ -104,7 +104,7 @@ const createNewFriendship = async (friendOneId: string, friendTwoId: string, sen
 const updateFriendship = async (friendOneId: string, friendTwoId: string, sender: string) =>{
     try{
         const url =  qs.stringifyUrl({
-            url: "/api/friends/updateFriendRequest",
+            url: "/api/socket/friends",
             query: {
                 OneId: friendOneId,
                 TwoId: friendTwoId,

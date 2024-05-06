@@ -72,7 +72,7 @@ export async function GET(
         const mutualFriendIds = userFriendIds.filter(id => profileFriendIds.includes(id));
 
         if (mutualFriendIds.length === 0) {
-            return new NextResponse("No mutual friends found", { status: 201 });
+            return new NextResponse("No mutual friends found", { status: 401 });
         }
         
         const users = await db.profile.findMany({
