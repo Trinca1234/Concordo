@@ -10,14 +10,15 @@ export async function GET(
         const {searchParams} = new URL(req.url);
         const profile = await currentProfile();
         const userId = searchParams.get("id");
-
+        
         if (!userId) {
             return new NextResponse("Id missing", { status: 400 });
         }
-
+        
         if (!profile) {
             return new NextResponse("Profile missing", { status: 400 });
         }
+        console.log(profile.id);
 
         const profileFriends = await db.friends.findMany({
             where:{
@@ -70,9 +71,10 @@ export async function GET(
         console.log(userFriendIds);
 
         const mutualFriendIds = userFriendIds.filter(id => profileFriendIds.includes(id));
+        console.log(mutualFriendIds)
 
         if (mutualFriendIds.length === 0) {
-            return new NextResponse("No mutual friends found", { status: 401 });
+            return new NextResponse("No mutual friends found", { status: 201 });
         }
         
         const users = await db.profile.findMany({

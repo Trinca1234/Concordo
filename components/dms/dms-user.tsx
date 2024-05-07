@@ -86,8 +86,6 @@ export const DmsUser = ({
     }
 
     async function onBlock() {
-
-        console.log("entrou block")
         try {
             const url =  qs.stringifyUrl({
                 url: "/api/friends/blockFriendRequest",

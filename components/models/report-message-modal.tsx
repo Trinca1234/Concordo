@@ -43,8 +43,13 @@ export const ReportMessageModal = () => {
         }
     }; 
 
+    const handleOnClose = async () =>{
+        setReason("");
+        onClose();
+    }
+
     return (
-        <Dialog open={isModalOpen} onOpenChange={onClose}>
+        <Dialog open={isModalOpen} onOpenChange={handleOnClose}>
             <DialogContent className="bg-white dark:bg-zinc-700 text-white p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
@@ -68,7 +73,7 @@ export const ReportMessageModal = () => {
                     <div className="flex items-center justify-between w-full">
                         <Button
                             disabled={isLoading}
-                            onClick={onClose}
+                            onClick={handleOnClose}
                             variant="ghost"
                         >
                             Cancel

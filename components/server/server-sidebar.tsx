@@ -198,6 +198,7 @@ export const ServerSidebar = async ({
                                         key={member.id}
                                         member={member}
                                         server={server}
+                                        profile={profile}
                                     />
                                 )
                             ))}

@@ -2,13 +2,11 @@
 
 import { cn } from "@/lib/utils";
 import { Member, MemberRole, Profile, Server } from "@prisma/client"
-import { ChevronDown, CircleEllipsis, LucideCircleEllipsis, ShieldAlert, ShieldCheck } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { ChevronDown, Flag, ShieldAlert, ShieldCheck } from "lucide-react";
+import { redirect, useParams, useRouter } from "next/navigation";
 import { UserAvatar } from "../user-avatar";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
 import { useMediaQuery } from "react-responsive";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import {
@@ -20,10 +18,14 @@ import {
   import axios from "axios";
   import qs from "query-string";
 import { useEffect, useState } from "react";
+import { getOrCreateFriendship } from "@/lib/friend";
+import { ActionTooltip } from "../action-tooltip";
+import { useModal } from "@/hooks/use-modal-store";
 
 interface ServerMemberProps{
     member: Member & {profile: Profile};
     server: Server;
+    profile: Profile;
 }
 
 const roleIconMap = {
@@ -34,31 +36,60 @@ const roleIconMap = {
 
 export const ServerMember = ({
     member,
+    profile
 }: ServerMemberProps) =>{
     const params = useParams();
     const router = useRouter();
     const [mutualFriends, setMutualFriends] = useState<{ id: string; name: string; imageUrl: string; }[]>([]);
     const [mutualServers, setMutualServers] = useState<{ id: string; name: string; imageUrl: string; }[]>([]);
     const [friendship, setFriendship] = useState(false);
+    const { onOpen } = useModal();
 
     const icon = roleIconMap[member.role];
-    const isDesktop = useMediaQuery({ query: '(min-width: 550px)' });
 
     const SendFriendRequest = async () =>{
-        /* const url = qs.stringifyUrl({
-            url: "/api/socket/friendship",
-            query: {
-                id: member.profileId
-            }
-        }); 
-        
-        const friendship = await axios.get(url); */
+        const friendship = getOrCreateFriendship(profile.id, member.profile.email, profile.id)
+        console.log(friendship)
     }
 
     const SendMessage = () =>{
         router.push(`/dms/conversations/${member.profileId}`)
     }
 
+    async function removeFriend() {
+        try {
+            const url =  qs.stringifyUrl({
+                url: "/api/friends/declineFriendRequest",
+                query: {
+                    TwoId: member.profile.id
+                }
+            });
+    
+            const response = await axios.patch(url);
+
+            console.log(response);
+
+            router.refresh();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function blockFriend() {
+        try {
+            const url =  qs.stringifyUrl({
+                url: "/api/friends/blockFriendRequest",
+                query: {
+                    TwoId: member.profile.id
+                }
+            });
+
+            await axios.patch(url);
+            router.refresh();
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     async function fetchUsers() {
         try {
@@ -84,14 +115,18 @@ export const ServerMember = ({
             const users = await axios.get(url2);
             console.log(member.profileId);
             console.log(users);
-            setMutualFriends(users.data);
+            if(users.data === "No mutual friends found"){
+                setMutualFriends([]);
+            }else{
+                setMutualFriends(users.data);
+            }
 
             const url3 = qs.stringifyUrl({
                 url: "/api/friends/getMutualServers",
                 query: {
                     id: member.profileId
                 }
-            }); 
+            });
             
             const servers = await axios.get(url3);
             console.log(member.profileId);
@@ -116,14 +151,14 @@ export const ServerMember = ({
                         src={member.profile.imageUrl}
                         className="h-8 w-8 md:h-8 md:w-8"
                     />
-                    <p
-                        className={cn(
-                            "font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition",
-                            params?.memberId === member.id && "text-primary dark:text-zinc-200 dark:group-hover:text-white"
-                        )}
-                    >
-                        {isDesktop && member.profile.name.length > 20 ? `${member.profile.name.slice(0, 20)}...` : `${member.profile.name.slice(0, 14)}...`}
-                    </p>
+                        <p
+                            className={cn(
+                                "font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition",
+                                params?.memberId === member.id && "text-primary dark:text-zinc-200 dark:group-hover:text-white"
+                            )}
+                        >
+                            {member.profile.name.length > 14 ? `${member.profile.name.slice(0, 16)}...` : member.profile.name}
+                        </p>
                     {icon}
                 </button>
             </PopoverTrigger>
@@ -134,13 +169,13 @@ export const ServerMember = ({
                             src={member.profile.imageUrl}
                             className="h-8 w-8 md:h-24 md:w-24"
                         />
-                        {friendship == true &&(
-                            <Button onClick={fetchUsers} className=" bg-green-600 font-bold">
+                        {friendship === true &&(
+                            <Button onClick={SendMessage} className=" bg-green-600 font-bold">
                                 Send Message
                             </Button>
                         )}
-                        {friendship != true &&(
-                            <Button onClick={fetchUsers} className=" bg-green-600 font-bold">
+                        {friendship !== true &&(
+                            <Button onClick={SendFriendRequest} className=" bg-green-600 font-bold">
                                 Send Friend Request
                             </Button>
                         )}
@@ -150,54 +185,32 @@ export const ServerMember = ({
                                     <ChevronDown color="white"/>
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56">
-                                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuContent className=" w-40">
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
-                                <DropdownMenuItem>
-                                    Profile
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    Billing
-                                    <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    Settings
-                                    <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    Keyboard shortcuts
-                                    <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-                                </DropdownMenuItem>
+                                    {friendship === true &&(
+                                        <>
+                                            <DropdownMenuItem onClick={removeFriend}>
+                                                Remove Friend
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={blockFriend}>
+                                                Block Friend
+                                            </DropdownMenuItem>
+                                        </>
+                                    )}
+                                    <DropdownMenuItem 
+                                        onClick={() => onOpen("reportMessage", { 
+                                            apiUrl: `/api/profile/reports`,
+                                            ids: member.profileId
+                                        })}
+                                    >
+                                        Report User
+                                        <Flag
+                                        className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition"
+                                        />
+                                    </DropdownMenuItem>
                                 </DropdownMenuGroup>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuGroup>
-                                <DropdownMenuItem>Team</DropdownMenuItem>
-                                <DropdownMenuSub>
-                                    <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
-                                    <DropdownMenuPortal>
-                                    <DropdownMenuSubContent>
-                                        <DropdownMenuItem>Email</DropdownMenuItem>
-                                        <DropdownMenuItem>Message</DropdownMenuItem>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem>More...</DropdownMenuItem>
-                                    </DropdownMenuSubContent>
-                                    </DropdownMenuPortal>
-                                </DropdownMenuSub>
-                                <DropdownMenuItem>
-                                    New Team
-                                    <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                                </DropdownMenuGroup>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>GitHub</DropdownMenuItem>
-                                <DropdownMenuItem>Support</DropdownMenuItem>
-                                <DropdownMenuItem disabled>API</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                    Log out
-                                    <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-                                </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
@@ -209,11 +222,11 @@ export const ServerMember = ({
                                 <TabsTrigger value="Servers">Mutual Servers</TabsTrigger>
                             </TabsList>
                             <TabsContent value="Friends">
-                                <div className="flex items-center gap-x-2">
-                                    {mutualFriends.length > 0 ? (
+                                <div className="flex flex-col gap-y-4">
+                                    {mutualFriends && mutualFriends.length > 0 ? (
                                         mutualFriends.map(friend => (
                                             <div key={friend.id} className="flex items-center">
-                                                <UserAvatar 
+                                                <UserAvatar
                                                     src={friend.imageUrl}
                                                     className="h-14 w-8 md:h-14 md:w-14"
                                                 />
@@ -228,11 +241,11 @@ export const ServerMember = ({
                                 </div>
                             </TabsContent>
                             <TabsContent value="Servers">
-                                <div className="flex items-center gap-x-2">
+                                <div className="flex flex-col gap-y-4">
                                     {mutualServers.length > 0 ? (
                                         mutualServers.map(server => (
                                             <div key={server.id} className="flex items-center">
-                                                <UserAvatar 
+                                                <UserAvatar
                                                     src={server.imageUrl}
                                                     className="h-14 w-8 md:h-14 md:w-14"
                                                 />
