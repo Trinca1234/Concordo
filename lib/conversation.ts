@@ -25,14 +25,12 @@ export const getOrCreateConversation = async (profileOneId: string, profileTwoId
             if(!conversation){
                 conversation = await createNewConversation(profileOneId, profileTwoId);
             }
-        
             return conversation;    
         }else{
             let conversation = await findConversation(profileTwoId, profileOneId);
             if(!conversation){
                 conversation = await createNewConversation(profileTwoId, profileOneId);
             }
-        
             return conversation; 
         }
     }else{

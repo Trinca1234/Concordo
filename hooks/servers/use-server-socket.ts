@@ -1,5 +1,5 @@
 import { useSocket } from "@/components/providers/socket-provider"
-import { Member, Message, Profile } from "@prisma/client";
+import { Server } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
@@ -9,13 +9,7 @@ type ChatSocketProps = {
     queryKey: string,
 }
 
-type MessageWithMemberWithProfile = Message & {
-    member: Member & {
-        profile: Profile;
-    }
-}
-
-export const useChatSocket = ({
+export const useServerSocket = ({
     addKey,
     updateKey,
     queryKey,
@@ -28,7 +22,8 @@ export const useChatSocket = ({
             return;
         }
 
-        socket.on(updateKey, (message: MessageWithMemberWithProfile)=>{
+        socket.on(updateKey, (server: Server)=>{
+            console.log('Received updated server:', server);
             queryClient.setQueryData([queryKey], (oldData: any) =>{
                 if(!oldData || !oldData.pages || oldData.pages.length === 0){
                     return oldData;
@@ -36,9 +31,9 @@ export const useChatSocket = ({
                 const newData = oldData.pages.map((page: any) =>{
                     return{
                         ...page,
-                        items: page.items.map((item: MessageWithMemberWithProfile)=>{
-                            if(item.id === message.id){
-                                return message;
+                        items: page.items.map((item: Server)=>{
+                            if(item.id === server.id){
+                                return server;
                             }
                             return item;
                         })
@@ -51,12 +46,13 @@ export const useChatSocket = ({
             })
         });
 
-        socket.on(addKey, (message: MessageWithMemberWithProfile)=>{
+        socket.on(addKey, (server: Server)=>{
+            console.log('Received updated server:', server);
             queryClient.setQueryData([queryKey], (oldData: any)=>{
                 if(!oldData || !oldData.pages || oldData.pages.length === 0){
                     return{
                         pages:[{
-                            items: [message],
+                            items: [server],
                         }]
                     }
                 }
@@ -65,7 +61,7 @@ export const useChatSocket = ({
                 newData[0] ={
                     ...newData[0],
                     items:[
-                        message,
+                        server,
                         ...newData[0].items,
                     ]
                 };

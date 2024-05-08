@@ -5,7 +5,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-
+import qs from "query-string";
 
 import {
     Dialog,
@@ -39,7 +39,7 @@ const formSchema = z.object({
     }),
 });
 
-export const CreateServerModal = () => {
+export const CreateServerModal = () => { 
     const { isOpen, onClose, type } = useModal();
     const router = useRouter();
 
@@ -57,7 +57,14 @@ export const CreateServerModal = () => {
 
     const onSubmit = async(values: z.infer<typeof formSchema>)=>{
         try{
-            await axios.post("/api/servers", values);
+            const url = qs.stringifyUrl({
+                url: `/api/socket/servers`,
+                query: {
+                    name: values.name,
+                    imageUrl: values.imageUrl
+                },
+            });
+            await axios.post(url);
             form.reset();
             router.refresh();
             onClose();
