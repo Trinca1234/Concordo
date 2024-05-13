@@ -8,12 +8,17 @@ import{
 import { Button } from "@/components/ui/button";
 import { NavigationSidebar } from "@/components/navigation/navigation-sidebar";
 import { ServerSidebar } from "@/components/server/server-sidebar";
+import { currentProfile } from "@/lib/current-profile";
 
-export const MobileTogle = ({
+export const MobileTogle = async ({
     serverId
 }:{
     serverId: string;
 }) =>{
+    const profile = await currentProfile()
+    if(!profile){
+        return
+    }
     return(
         <Sheet>
             <SheetTrigger asChild>
@@ -23,7 +28,7 @@ export const MobileTogle = ({
             </SheetTrigger>
             <SheetContent side="left" className="p-0 flex gap-0">
                 <div className="w-[72px]">
-                    <NavigationSidebar/>
+                    <NavigationSidebar profileId={profile.id} />
                 </div>
                 <ServerSidebar serverId={serverId}/>
             </SheetContent>

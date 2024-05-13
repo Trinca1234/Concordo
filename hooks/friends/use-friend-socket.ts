@@ -3,17 +3,17 @@ import { Server } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
-type ChatSocketProps = {
+type FriendSocketProps = {
     addKey: string,
     updateKey: string,
     queryKey: string,
 }
 
-export const useServerSocket = ({   
+export const useFriendSocket = ({   
     addKey,
-    updateKey,
+    updateKey,  
     queryKey,
-}: ChatSocketProps) =>{
+}: FriendSocketProps) =>{
     const { socket } = useSocket();
     const queryClient = useQueryClient();
 

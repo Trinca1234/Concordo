@@ -64,6 +64,7 @@ export const CreateServerModal = () => {
                     imageUrl: values.imageUrl
                 },
             });
+            console.log("emmiting server:add");
             await axios.post(url);
             form.reset();
             router.refresh();
@@ -84,7 +85,7 @@ export const CreateServerModal = () => {
 
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Customize your server
+                        Create your server
                     </DialogTitle>
 
                     <DialogDescription className="text-center text-zinc-500">

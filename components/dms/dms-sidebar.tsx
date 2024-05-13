@@ -12,6 +12,7 @@ import axios from "axios";
 import { Loader2, ServerCrash } from "lucide-react";
 import { SocketIndicator } from "../socket-indicator";
 import { useFriendQuery } from "@/hooks/friends/use-friend-query";
+import { useFriendSocket } from "@/hooks/friends/use-friend-socket";
 
 type users = {
     id: string,
@@ -19,10 +20,19 @@ type users = {
     imageUrl: string
 }
 
-export const DmsSidebar = () =>{
+interface DmsSidebarProps {
+    profileId: string;
+}
+
+export const DmsSidebar = ({
+    profileId,
+}: DmsSidebarProps) =>{
     const [users, setUsers] = useState<{ id: string; name: string; imageUrl: string; }[]>([]);
 
     const queryKey = `friends:`;
+    const addKey = `friends:${profileId}:add`;
+    const updateKey = `friends:${profileId}:update`;
+    const blockKey = `friends:${profileId}:block`;
     const apiUrl = "/api/friends/getUsers";
     const paramKey = "status";
     const paramValue = "ACCEPTED"
@@ -36,6 +46,8 @@ export const DmsSidebar = () =>{
         paramKey,
         paramValue
     })
+    useFriendSocket({addKey, updateKey, queryKey})
+    console.log()
 
     if(status === "pending"){
         return(

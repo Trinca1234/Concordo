@@ -25,7 +25,7 @@ interface NavigationSidebarProps {
 export const NavigationSidebar = ({
     profileId,
 }: NavigationSidebarProps) => { 
-    const queryKey = `servers:${profileId}`;
+    const queryKey = `servers:`;
     const addKey = `servers:${profileId}:add`;
     const updateKey = `servers:${profileId}:update`;
     const apiUrl = "/api/servers";

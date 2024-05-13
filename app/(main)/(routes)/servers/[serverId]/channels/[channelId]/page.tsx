@@ -47,6 +47,7 @@ const ChannelIdPage = async ({
             name={channel.name}
             serverId={channel.serverId}
             type="channel"
+            profileId={profile.id}
             />
             {channel.type === ChannelType.TEXT && (
                 <> 

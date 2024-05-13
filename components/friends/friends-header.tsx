@@ -58,7 +58,7 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
 
     return (
         <div className="text-md font-semibold px-3 flex items-center h-12 border-neutral-200 dark:border-neutral-800 border-b-2">
-            <DmMobileTogle />
+            <DmMobileTogle profileId={profile.id} />
             <div className=" hidden md:flex h-8 w-8 mr-2 mt-1">
                 <UserRound />
             </div>

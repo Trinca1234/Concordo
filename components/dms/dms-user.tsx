@@ -12,7 +12,6 @@ import axios from "axios";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 interface DmsUserProps {
-    key: string;
     profile: {
         id: string;
         name: string;
@@ -23,7 +22,6 @@ interface DmsUserProps {
 }
 
 export const DmsUser = ({
-    key,
     profile,
     type,
     socketUrl

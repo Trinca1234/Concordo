@@ -25,6 +25,7 @@ import {
     FormMessage,
 }from "@/components/ui/form";
 
+import qs from "query-string";
 import { Input } from "@/components/ui/input";
 import { FileUpload } from "@/components/file-upload";
 import { useRouter } from "next/navigation";
@@ -66,7 +67,14 @@ export const EditServerModal = () => {
 
     const onSubmit = async(values: z.infer<typeof formSchema>)=>{
         try{
-            await axios.patch(`/api/server/${server?.id}`, values);
+            const url = qs.stringifyUrl({
+                url: `/api/socket/servers/${server?.id}`,
+                query: {
+                    name: values.name,
+                    imageUrl: values.imageUrl
+                },
+            });
+            await axios.patch(url);
             
             form.reset();
             router.refresh();

@@ -7,7 +7,6 @@ import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import { DmMobileTogle } from "@/components/mobile-toggle-dm";
 
 interface MemberIdPageProps{
     params: {
@@ -55,6 +54,7 @@ const MemberIdPage = async ({
             name={otherMember.name}
             serverId={""}
             type="conversation"
+            profileId={profile.id}
             />
             {searchParams.video && (
               <MediaRoom

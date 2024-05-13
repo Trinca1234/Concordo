@@ -9,8 +9,15 @@ import { Button } from "@/components/ui/button";
 import { NavigationSidebar } from "@/components/navigation/navigation-sidebar";
 import { ServerSidebar } from "@/components/server/server-sidebar";
 import { DmsSidebar } from "./dms/dms-sidebar";
+import { currentProfile } from "@/lib/current-profile";
 
-export const DmMobileTogle = () =>{
+interface DmMobileProps {
+    profileId: string;
+}
+
+export const DmMobileTogle = ({
+    profileId,
+}: DmMobileProps) =>{
     return(
         <Sheet>
             <SheetTrigger asChild>
@@ -20,9 +27,9 @@ export const DmMobileTogle = () =>{
             </SheetTrigger>
             <SheetContent side="left" className="p-0 flex gap-0">
                 <div className="w-[72px]">
-                    <NavigationSidebar/>
+                    <NavigationSidebar profileId={profileId} /> 
                 </div>
-            <DmsSidebar/>
+            <DmsSidebar profileId={profileId} />
             </SheetContent>
         </Sheet>
     )
