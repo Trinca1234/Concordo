@@ -28,6 +28,7 @@ export const DmsSidebar = ({
     profileId,
 }: DmsSidebarProps) =>{
     const [users, setUsers] = useState<{ id: string; name: string; imageUrl: string; }[]>([]);
+    const [freidsIds, setFriendsIds] = useState<{ id: string;}[]>([]);
 
     const queryKey = `friends:`;
     const addKey = `friends:${profileId}:add`;
@@ -36,6 +37,23 @@ export const DmsSidebar = ({
     const apiUrl = "/api/friends/getUsers";
     const paramKey = "status";
     const paramValue = "ACCEPTED"
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const url = qs.stringifyUrl({
+                    url: "/api/servers",
+                });
+
+                const response = await axios.get(url);
+                setFriendsIds(response.data || []);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const {
         data,
@@ -47,7 +65,6 @@ export const DmsSidebar = ({
         paramValue
     })
     useFriendSocket({addKey, updateKey, queryKey})
-    console.log()
 
     if(status === "pending"){
         return(

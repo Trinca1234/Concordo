@@ -77,7 +77,7 @@ export const EditServerModal = () => {
             await axios.patch(url);
             
             form.reset();
-            router.refresh();
+            router.push(`/servers/${server?.id}`);
             onClose();
         }catch(error){
             console.log(error);

@@ -53,10 +53,9 @@ const formSchema = z.object({
 export const CreateChannelModal = () => {
     const { isOpen, onClose, type, data } = useModal();
     const router = useRouter();
-    const params = useParams();
 
     const isModalOpen = isOpen && type === "createChannel";
-    const { channelType } = data;
+    const { channelType, ids } = data;
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -78,13 +77,19 @@ export const CreateChannelModal = () => {
 
     const onSubmit = async(values: z.infer<typeof formSchema>)=>{
         try{
+            if (!ids) {
+                console.log("no server id");
+                handleClose();
+                return
+            }
             const url = qs.stringifyUrl({
-                url:"/api/channels",
+                url:`/api/socket/channels/${ids}`,
                 query: {
-                    serverId: params?.serverId
+                    name: values.name,
+                    type: values.type
                 }
             });
-            await axios.post(url, values);
+            await axios.post(url);
             form.reset();
             router.refresh();
             onClose();

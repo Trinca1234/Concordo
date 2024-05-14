@@ -14,7 +14,7 @@ export const useFriendSocket = ({
     updateKey,  
     queryKey,
 }: FriendSocketProps) =>{
-    const { socket } = useSocket();
+    const { socket } = useSocket(); 
     const queryClient = useQueryClient();
 
     useEffect(()=>{

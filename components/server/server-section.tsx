@@ -12,6 +12,7 @@ interface ServerSectionProps{
     sectionType: "channels" | "members";
     channelType?: ChannelType;
     server?:ServerWithMemberWithProfile;
+    serverId?: string;
 }
 
 export const ServerSection = ({
@@ -19,9 +20,11 @@ export const ServerSection = ({
     role,
     sectionType,
     channelType,
-    server
+    server,
+    serverId
 }: ServerSectionProps) =>{
     const { onOpen } = useModal();
+    const ids = serverId;
 
     return(
         <div className="flex items-center justify-between py-2">
@@ -34,7 +37,7 @@ export const ServerSection = ({
                 side="top"
                 >
                     <button
-                    onClick={()=> onOpen("createChannel", {channelType})}
+                    onClick={()=> onOpen("createChannel", {channelType, ids})}
                     className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition">
                         <Plus className="h-4 w-4" />
                     </button>

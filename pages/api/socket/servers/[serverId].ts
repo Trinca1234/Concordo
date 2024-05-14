@@ -43,7 +43,7 @@ export default async function handler(
                     imageUrl: serverImageUrl,
                 }
             })
-            const updateKey = `servers:${profile.id}:update`;
+            const updateKey = `servers:${serverId}:update`;
             
             res?.socket?.server?.io?.emit(updateKey, server);
             

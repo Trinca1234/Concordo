@@ -30,7 +30,7 @@ export const MobileTogle = async ({
                 <div className="w-[72px]">
                     <NavigationSidebar profileId={profile.id} />
                 </div>
-                <ServerSidebar serverId={serverId}/>
+                <ServerSidebar serverId={serverId} profile={profile}/>
             </SheetContent>
         </Sheet>
     )

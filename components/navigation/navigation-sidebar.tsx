@@ -7,10 +7,12 @@ import { NavigationAction } from "./navigation-action";
 import { NavigationItem } from "./navigation-item";
 import { UserButton } from "@clerk/nextjs";
 import { NavigationDm } from "./navigation-dm";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useServerQuery } from "@/hooks/servers/use-server-query";
 import { Loader2, ServerCrash } from "lucide-react";
 import { useServerSocket } from "@/hooks/servers/use-server-socket";
+import qs from "query-string";
+import axios from "axios";
 
 interface Server {
     id: string;
@@ -25,10 +27,36 @@ interface NavigationSidebarProps {
 export const NavigationSidebar = ({
     profileId,
 }: NavigationSidebarProps) => { 
+    const [servers, setServers] = useState<{
+        id: string;
+        name: string;
+        imageUrl: string;
+        inviteCode: string;
+        profileId: string;
+        createdAt: Date;
+        updatedAt: Date;
+    }[]>([]);
+
     const queryKey = `servers:`;
     const addKey = `servers:${profileId}:add`;
-    const updateKey = `servers:${profileId}:update`;
     const apiUrl = "/api/servers";
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const url = qs.stringifyUrl({
+                    url: "/api/servers",
+                });
+
+                const response = await axios.get(url);
+                setServers(response.data || []);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const {
         data,
@@ -37,7 +65,7 @@ export const NavigationSidebar = ({
         queryKey,
         apiUrl,
     });
-    useServerSocket({queryKey, addKey, updateKey});
+    useServerSocket({queryKey, addKey, servers});
 
     if(status === "pending"){
         return(

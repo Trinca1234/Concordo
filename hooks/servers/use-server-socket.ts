@@ -5,48 +5,47 @@ import { useEffect } from "react";
 
 type ChatSocketProps = {
     addKey: string,
-    updateKey: string,
     queryKey: string,
+    servers: Server[],
 }
 
 export const useServerSocket = ({   
     addKey,
-    updateKey,
+    servers,
     queryKey,
 }: ChatSocketProps) =>{
     const { socket } = useSocket();
     const queryClient = useQueryClient();
 
     useEffect(()=>{
-        if(!socket){
+        if(!socket || !servers || servers.length === 0){
             return;
         }
 
-        console.log(addKey);
-        console.log(updateKey);
-        console.log(queryKey);
-        console.log(socket);
+        const updateKeys = servers.map((server: Server) => `servers:${server.id}:update`);
 
-        socket.on(updateKey, (server: Server)=>{
-            console.log('Received updated server:', server);
-            queryClient.setQueryData([queryKey], (oldData: any) =>{
-                if(!oldData || !oldData.pages || oldData.pages.length === 0){
-                    return oldData;
-                }
-                const newData = oldData.pages.map((page: any) =>{
-                    const updatedItems = page.map((item: any) => {
-                        if (item.id === server.id) {
-                            return server;
-                        }
-                        return item;
+        updateKeys.forEach(key => {
+            socket.on(key, (server: Server) => {
+                console.log(`Received update for server ${server.id}`);
+                queryClient.setQueryData([queryKey], (oldData: any) =>{
+                    if(!oldData || !oldData.pages || oldData.pages.length === 0){
+                        return oldData;
+                    }
+                    const newData = oldData.pages.map((page: any) =>{
+                        const updatedItems = page.map((item: any) => {
+                            if (item.id === server.id) {
+                                return server;
+                            }
+                            return item;
+                        });
+                        return updatedItems;
                     });
-                    return updatedItems;
-                });
-                return{
-                    ...oldData,
-                    pages: newData,
-                }
-            })
+                    return{
+                        ...oldData,
+                        pages: newData,
+                    }
+                })
+            });
         });
 
         socket.on(addKey, (server: Server)=>{
@@ -70,8 +69,10 @@ export const useServerSocket = ({
 
         return() =>{
             socket.off(addKey);
-            socket.off(updateKey);
+            updateKeys.forEach(key => {
+                socket.off(key);
+            });
         }
 
-    }, [queryClient, addKey, queryKey, socket, updateKey]);
+    }, [queryClient, addKey, queryKey, socket, servers]);
 }

@@ -55,7 +55,7 @@ export default async function handler(
         }
         
     }catch(error){
-        console.log("[SERVERS_GET]", error);
+        console.log("[SERVERS_POST]", error);
         return res.status(500).json({message: "Internal Error"});
     }
 }

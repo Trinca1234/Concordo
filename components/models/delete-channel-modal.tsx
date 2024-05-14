@@ -32,16 +32,15 @@ export const DeleteChannelModal = () => {
             setIsLoading(true);
 
             const url =  qs.stringifyUrl({
-                url:`/api/channels/${channel?.id}`,
+                url:`/api/socket/channels/${server?.id}`,
                 query:{
-                    serverId: server?.id
+                    channelId: channel?.id
                 }
             })
-
+            
             await axios.delete(url);
 
             onClose();
-            router.refresh();
             router.push(`/servers/${server?.id}`);
         } catch(error){
             console.log(error);

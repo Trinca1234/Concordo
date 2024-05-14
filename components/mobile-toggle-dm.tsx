@@ -7,7 +7,6 @@ import{
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { NavigationSidebar } from "@/components/navigation/navigation-sidebar";
-import { ServerSidebar } from "@/components/server/server-sidebar";
 import { DmsSidebar } from "./dms/dms-sidebar";
 import { currentProfile } from "@/lib/current-profile";
 
