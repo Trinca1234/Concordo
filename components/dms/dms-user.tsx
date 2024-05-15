@@ -18,13 +18,11 @@ interface DmsUserProps {
         imageUrl: string;
     };
     type: string;
-    socketUrl: string;
 }
 
 export const DmsUser = ({
     profile,
     type,
-    socketUrl
 }: DmsUserProps) => {
     const params = useParams();
     const router = useRouter();
@@ -48,15 +46,31 @@ export const DmsUser = ({
     async function onAccept() {
         try {
             const url =  qs.stringifyUrl({
-                url: "/api/friends/acceptFriendRequest",
+                url: `/api/socket/friends/update`,
                 query: {
-                    TwoId: profile.id
+                    friendTwoId: profile.id,
+                    status: "ACCEPTED"
                 }
             });
     
             const response = await axios.patch(url);
 
-            console.log(response);
+            console.log(response.status);
+
+            if(response.status == 200){
+
+                console.log("vai para a second key")
+                const url = qs.stringifyUrl({
+                    url: `/api/socket/secondKey`,
+                    query:{
+                        friendTwoId: profile.id,
+                    }
+                })
+
+                const response = await axios.get(url);
+
+                console.log(response)
+            }
 
             router.refresh();
         } catch (error) {

@@ -13,6 +13,7 @@ import { Loader2, ServerCrash } from "lucide-react";
 import { SocketIndicator } from "../socket-indicator";
 import { useFriendQuery } from "@/hooks/friends/use-friend-query";
 import { useFriendSocket } from "@/hooks/friends/use-friend-socket";
+import { FriendshipStatus } from "@prisma/client";
 
 type users = {
     id: string,
@@ -28,32 +29,13 @@ export const DmsSidebar = ({
     profileId,
 }: DmsSidebarProps) =>{
     const [users, setUsers] = useState<{ id: string; name: string; imageUrl: string; }[]>([]);
-    const [freidsIds, setFriendsIds] = useState<{ id: string;}[]>([]);
 
     const queryKey = `friends:`;
     const addKey = `friends:${profileId}:add`;
     const updateKey = `friends:${profileId}:update`;
-    const blockKey = `friends:${profileId}:block`;
     const apiUrl = "/api/friends/getUsers";
     const paramKey = "status";
     const paramValue = "ACCEPTED"
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const url = qs.stringifyUrl({
-                    url: "/api/servers",
-                });
-
-                const response = await axios.get(url);
-                setFriendsIds(response.data || []);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        fetchData();
-    }, []);
 
     const {
         data,
@@ -64,7 +46,7 @@ export const DmsSidebar = ({
         paramKey,
         paramValue
     })
-    useFriendSocket({addKey, updateKey, queryKey})
+    useFriendSocket({addKey, queryKey, updateKey})
 
     if(status === "pending"){
         return(
@@ -134,10 +116,9 @@ export const DmsSidebar = ({
                     },
                 ]}
             />
-            <ScrollArea className="flex px-3">
-                <div className="mt-2">
-                </div>
+            <ScrollArea className="flex px-3 mb-2">
                 <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2"/>
+                <SocketIndicator/>
                     <div className="mb-2">
                         <div className="flex items-center justify-between py-2">
                             <p className="text-xs uppercase font-semibold text-zinc-500 dark:text-zinc-400">
@@ -153,7 +134,6 @@ export const DmsSidebar = ({
                                             key={user.id}
                                             profile={user}
                                             type="users"
-                                            socketUrl="api/socket/friend"
                                         />
                                     ))}
                                 </Fragment>

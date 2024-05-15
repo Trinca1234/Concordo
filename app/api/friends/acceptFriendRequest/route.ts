@@ -44,7 +44,7 @@ export async function PATCH(
                     id: friendship.id,
                 },
                 data:{
-                    status: "ACCEPTED" 
+                    status: "ACCEPTED"
                 }
             })
 
@@ -83,7 +83,7 @@ export async function PATCH(
             where: {
                 status: "UNREAD",
                 content: "pending",
-                OR: [
+                OR: [ 
                     { recipientId: profile.id, senderId: friendTwoId },
                     { senderId: profile.id, recipientId: friendTwoId }
                 ]

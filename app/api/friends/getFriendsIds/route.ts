@@ -19,9 +19,6 @@ export async function GET(
                     { friendOneId: profile.id },
                     { friendTwoId: profile.id }
                 ]
-            },
-            select:{ 
-                id: true
             }
         })
 

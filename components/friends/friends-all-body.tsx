@@ -105,7 +105,7 @@ export const FriendsAllBody = () => {
                             <div className="space-y-[2px} ">
                                 {filteredUsers.map(user => (
                                     <div key={user.id} className="border-t border-zinc-200 dark:border-zinc-700">
-                                        {/* <DmsUser profile={user} type={"Accepted"}/> */}
+                                        <DmsUser profile={user} type={"Accepted"}/>
                                     </div>
                                 ))}
                             </div>

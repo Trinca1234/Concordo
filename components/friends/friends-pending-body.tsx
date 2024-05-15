@@ -25,7 +25,6 @@ export const FriendsPendingBody = () => {
             });
          
             const response = await axios.get(url);
-            console.log(response);
             setUsers(response.data);
             setLoading(false);
         } catch (error) {
@@ -108,7 +107,7 @@ export const FriendsPendingBody = () => {
                             <div className="space-y-[2px} ">
                                 {filteredUsers.map(user => (
                                     <div key={user.id} className="border-t border-zinc-200 dark:border-zinc-700">
-                                        {/* <DmsUser profile={user} type={user.type}/> */}
+                                        <DmsUser profile={user} type={user.type}/>
                                     </div>
                                 ))}
                             </div>

@@ -1,18 +1,18 @@
 import { useSocket } from "@/components/providers/socket-provider"
-import { Server } from "@prisma/client";
+import { Friends, Server } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 type FriendSocketProps = {
     addKey: string,
-    updateKey: string,
     queryKey: string,
+    updateKey: string,
 }
 
 export const useFriendSocket = ({   
     addKey,
-    updateKey,  
     queryKey,
+    updateKey,
 }: FriendSocketProps) =>{
     const { socket } = useSocket(); 
     const queryClient = useQueryClient();
@@ -22,26 +22,24 @@ export const useFriendSocket = ({
             return;
         }
 
-        console.log(addKey);
-        console.log(updateKey);
-        console.log(queryKey);
-        console.log(socket);
+        console.log(updateKey)
 
-        socket.on(updateKey, (server: Server)=>{
-            console.log('Received updated server:', server);
+        socket.on(updateKey, (friend: Friends) => {
+            console.log(`Received update for server ${friend.id}`);
             queryClient.setQueryData([queryKey], (oldData: any) =>{
+                console.log(oldData);
+                console.log(friend);
                 if(!oldData || !oldData.pages || oldData.pages.length === 0){
                     return oldData;
                 }
-                const newData = oldData.pages.map((page: any) =>{
-                    const updatedItems = page.map((item: any) => {
-                        if (item.id === server.id) {
-                            return server;
-                        }
-                        return item;
-                    });
-                    return updatedItems;
-                });
+                const newData = [...oldData.pages];
+                
+                const isFriendAlreadyThere = newData[0].some((existingFriend: Friends) => existingFriend.id === friend.id);
+                
+                if (!isFriendAlreadyThere) {
+                    newData[0].push(friend);
+                }
+
                 return{
                     ...oldData,
                     pages: newData,
