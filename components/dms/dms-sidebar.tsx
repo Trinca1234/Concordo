@@ -31,8 +31,9 @@ export const DmsSidebar = ({
     const [users, setUsers] = useState<{ id: string; name: string; imageUrl: string; }[]>([]);
 
     const queryKey = `friends:`;
-    const addKey = `friends:${profileId}:add`;
-    const updateKey = `friends:${profileId}:update`;
+    const acceptedKey = `friends:${profileId}:accepted`;
+    const deniedKey = `friends:${profileId}:denied`;
+    const blockedKey = `friends:${profileId}:blocked`;
     const apiUrl = "/api/friends/getUsers";
     const paramKey = "status";
     const paramValue = "ACCEPTED"
@@ -46,7 +47,14 @@ export const DmsSidebar = ({
         paramKey,
         paramValue
     })
-    useFriendSocket({addKey, queryKey, updateKey})
+    useFriendSocket({ queryKey, deniedKey, acceptedKey, blockedKey})
+
+    useEffect(() => {
+        if (data) {
+            const updatedUsers = data.pages.flat();
+            setUsers(updatedUsers);
+        }
+    }, [data]);
 
     if(status === "pending"){
         return(

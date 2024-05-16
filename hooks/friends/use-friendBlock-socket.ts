@@ -10,7 +10,7 @@ type FriendSocketProps = {
     blockedKey: string,
 }
 
-export const useFriendSocket = ({   
+export const useFriendBlockSocket = ({   
     queryKey,
     acceptedKey,
     deniedKey,
@@ -24,8 +24,8 @@ export const useFriendSocket = ({
             return;
         }
 
-        socket.on(acceptedKey, (friend: Friends) => {
-            console.log(`Received accept for friend ${friend.id}`);
+        socket.on(blockedKey, (friend: Friends) => {
+            console.log(`Received block for friend ${friend.id}`);
             queryClient.setQueryData([queryKey], (oldData: any) =>{
 
                 if(!oldData || !oldData.pages || oldData.pages.length === 0){
@@ -38,6 +38,7 @@ export const useFriendSocket = ({
                 if (!isFriendAlreadyThere) {
                     newData[0].push(friend);
                 }
+                console.log(newData)
 
                 return{
                     ...oldData,
@@ -69,8 +70,8 @@ export const useFriendSocket = ({
             });
         });
 
-        socket.on(blockedKey, (friend: Friends) => {
-            console.log(`Received block for friend ${friend.id}`);
+        socket.on(acceptedKey, (friend: Friends) => {
+            console.log(`Received accept for friend ${friend.id}`);
             queryClient.setQueryData([queryKey], (oldData: any) => {
         
                 if (!oldData || !oldData.pages || oldData.pages.length === 0) {

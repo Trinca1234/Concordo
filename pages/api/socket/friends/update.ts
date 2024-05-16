@@ -53,32 +53,35 @@ export default async function handler(
             },
             data:{
                 status: status as FriendshipStatus,
-                /* senderId: profile.id */
+                senderId: profile.id
             }
         })
 
-        if(status == "ACCEPTED"){
-            const friendtwo = await db.profile.findFirst({
-                where: {
-                    id: friendTwoId.toString()
-                },
-                select:{
-                    id: true,
-                    name: true,
-                    imageUrl: true
-                }
-            })
-            
-            const profileKey = `friends:${profile.id}:update`;
-            res?.socket?.server?.io?.emit(profileKey, friendtwo);
+        const friendtwo = await db.profile.findFirst({
+            where: {
+                id: friendTwoId.toString()
+            },
+            select:{
+                id: true,
+                name: true,
+                imageUrl: true
+            }
+        })
 
-            return res.status(200).json(friendship);
+        if(status === "ACCEPTED"){
+            const acceptedKey = `friends:${profile.id}:accepted`;
+
+            res?.socket?.server?.io?.emit(acceptedKey, friendtwo);
+        }else if(status === "DENIED"){
+            const deniedKey = `friends:${profile.id}:denied`;
+            
+            res?.socket?.server?.io?.emit(deniedKey, friendtwo);
+        }else if(status === "BLOCKED"){
+            const blockedKey = `friends:${profile.id}:blocked`;
+
+            res?.socket?.server?.io?.emit(blockedKey, friendtwo);
         }
 
-        const profileKey = `friends:${profile.id}:update`;
-
-        res?.socket?.server?.io?.emit(profileKey, friendship);
-        
         return res.status(200).json(friendship);
     }catch(error){
         console.log("[DIRECT_MESSAGES_POST]", error);

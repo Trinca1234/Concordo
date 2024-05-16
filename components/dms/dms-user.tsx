@@ -55,8 +55,6 @@ export const DmsUser = ({
     
             const response = await axios.patch(url);
 
-            console.log(response.status);
-
             if(response.status == 200){
 
                 console.log("vai para a second key")
@@ -64,6 +62,7 @@ export const DmsUser = ({
                     url: `/api/socket/secondKey`,
                     query:{
                         friendTwoId: profile.id,
+                        status: "ACCEPTED"
                     }
                 })
 
@@ -81,15 +80,30 @@ export const DmsUser = ({
     async function onDecline() {
         try {
             const url =  qs.stringifyUrl({
-                url: "/api/friends/declineFriendRequest",
+                url: `/api/socket/friends/update`,
                 query: {
-                    TwoId: profile.id
+                    friendTwoId: profile.id,
+                    status: "DENIED"
                 }
             });
     
             const response = await axios.patch(url);
 
-            console.log(response);
+            if(response.status == 200){
+
+                console.log("vai para a second key")
+                const url = qs.stringifyUrl({
+                    url: `/api/socket/secondKey`,
+                    query:{
+                        friendTwoId: profile.id,
+                        status: "DENIED"
+                    }
+                })
+
+                const response = await axios.get(url);
+
+                console.log(response)
+            }
 
             router.refresh();
         } catch (error) {
@@ -100,13 +114,30 @@ export const DmsUser = ({
     async function onBlock() {
         try {
             const url =  qs.stringifyUrl({
-                url: "/api/friends/blockFriendRequest",
+                url: `/api/socket/friends/update`,
                 query: {
-                    TwoId: profile.id
+                    friendTwoId: profile.id,
+                    status: "BLOCKED"
                 }
             });
-
+    
             const response = await axios.patch(url);
+
+            if(response.status == 200){
+
+                console.log("vai para a second key")
+                const url = qs.stringifyUrl({
+                    url: `/api/socket/secondKey`,
+                    query:{
+                        friendTwoId: profile.id,
+                        status: "BLOCKED"
+                    }
+                })
+
+                const response = await axios.get(url);
+
+                console.log(response)
+            }
 
             console.log(response);
 
@@ -117,16 +148,15 @@ export const DmsUser = ({
     }
 
     async function onUnblock() {
-
-        console.log("entrou block")
         try {
             const url =  qs.stringifyUrl({
-                url: "/api/friends/unblockFriendRequest",
+                url: `/api/socket/friends/update`,
                 query: {
-                    TwoId: profile.id
+                    friendTwoId: profile.id,
+                    status: "DENIED"
                 }
             });
-
+    
             const response = await axios.patch(url);
 
             console.log(response);

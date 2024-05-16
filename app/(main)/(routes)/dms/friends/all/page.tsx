@@ -15,7 +15,7 @@ const FriendAllPage = async () => {
             <FriendsHeader 
               profile={ profile }
             />
-            <FriendsAllBody/>
+            <FriendsAllBody profileId={profile.id} />
         </div> 
      );
 }

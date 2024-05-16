@@ -13,7 +13,15 @@ export default async function handler(
         return res.status(405).json({error: "Method not allowed"});
     }
     try{
-        const { friendTwoId } = req.query;
+        const { friendTwoId, status } = req.query;
+
+        if(!friendTwoId){
+            return res.status(400).json({error: "FriendTwoId missing"});
+        }
+
+        if(!status){
+            return res.status(400).json({error: "Status missing"});
+        }
 
         const profile = await currentProfilePages(req);
 
@@ -28,9 +36,23 @@ export default async function handler(
             }
         })
 
-        const friendKey = `friends:${friendTwoId}:update`;
+        if(status === "ACCEPTED"){
+            const acceptedKey = `friends:${friendTwoId}:accepted`;
 
-        res?.socket?.server?.io?.emit(friendKey, Profile);
+            res?.socket?.server?.io?.emit(acceptedKey, Profile);
+        }else if(status === "DENIED"){
+            const deniedKey = `friends:${friendTwoId}:denied`;
+            console.log("entrou denied");
+            console.log(friendTwoId);
+            console.log(deniedKey);
+
+
+            res?.socket?.server?.io?.emit(deniedKey, Profile);
+        }else if(status === "BLOCKED"){
+            const blockedKey = `friends:${friendTwoId}:blocked`;
+
+            res?.socket?.server?.io?.emit(blockedKey, Profile);
+        }
         
         return res.status(200).json(Profile);
     }catch(error){

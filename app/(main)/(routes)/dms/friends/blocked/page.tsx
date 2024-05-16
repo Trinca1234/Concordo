@@ -15,7 +15,7 @@ const FriendBlockPage = async () => {
             <FriendsHeader
               profile={ profile }
             />
-            <FriendsBlockedBody/>
+            <FriendsBlockedBody profileId={profile.id} />
         </div>
      );
 }
