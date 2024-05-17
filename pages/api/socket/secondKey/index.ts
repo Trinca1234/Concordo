@@ -42,16 +42,16 @@ export default async function handler(
             res?.socket?.server?.io?.emit(acceptedKey, Profile);
         }else if(status === "DENIED"){
             const deniedKey = `friends:${friendTwoId}:denied`;
-            console.log("entrou denied");
-            console.log(friendTwoId);
-            console.log(deniedKey);
-
 
             res?.socket?.server?.io?.emit(deniedKey, Profile);
         }else if(status === "BLOCKED"){
             const blockedKey = `friends:${friendTwoId}:blocked`;
 
             res?.socket?.server?.io?.emit(blockedKey, Profile);
+        }else if(status === "PENDING"){
+            const pendingKey = `friends:${friendTwoId}:pending`;
+
+            res?.socket?.server?.io?.emit(pendingKey, Profile);
         }
         
         return res.status(200).json(Profile);

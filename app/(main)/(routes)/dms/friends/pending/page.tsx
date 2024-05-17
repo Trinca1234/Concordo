@@ -13,9 +13,9 @@ const FriendAllPage = async () => {
     return ( 
         <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
             <FriendsHeader
-              profile={ profile }
+              profile={ profile } 
             />
-            <FriendsPendingBody/>
+            <FriendsPendingBody profileId={profile.id} />
         </div> 
      );
 }

@@ -79,6 +79,7 @@ export const DmsUser = ({
 
     async function onDecline() {
         try {
+            console.log("vai para o denied");
             const url =  qs.stringifyUrl({
                 url: `/api/socket/friends/update`,
                 query: {
@@ -158,6 +159,22 @@ export const DmsUser = ({
             });
     
             const response = await axios.patch(url);
+
+            if(response.status == 200){
+
+                console.log("vai para a second key")
+                const url = qs.stringifyUrl({
+                    url: `/api/socket/secondKey`,
+                    query:{
+                        friendTwoId: profile.id,
+                        status: "BLOCKED"
+                    }
+                })
+
+                const response = await axios.get(url);
+
+                console.log(response)
+            }
 
             console.log(response);
 

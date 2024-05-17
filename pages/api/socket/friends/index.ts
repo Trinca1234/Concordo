@@ -8,11 +8,11 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponseServerIo,
 ){
-    if(req.method !== "PATCH"){
+    if(req.method !== "POST"){
         return res.status(405).json({error: "Method not allowed"});
     }
     try{
-        const { friendTwoId, status } = req.query;
+        const { friendTwoId } = req.query;
 
         const profile = await currentProfilePages(req)
 
@@ -22,10 +22,6 @@ export default async function handler(
 
         if (!friendTwoId) {
             return res.status(400).json({error: "Friend two missing"});
-        }
-
-        if (!status) {
-            return res.status(400).json({error: "Status missing"});
         }
 
         const friendship = await db.friends.findFirst({
@@ -44,18 +40,16 @@ export default async function handler(
         });
 
         if(!friendship){
-            return res.status(400).json({error: "Friendship non existent"});
+            await db.friends.create({
+                data:{
+                    friendOneId: profile.id,
+                    friendTwoId: friendTwoId.toString(),
+                    status: "PENDING",
+                    senderId: profile.id
+                }
+            })
         }
 
-        await db.friends.update({
-            where:{
-                id: friendship.id
-            },
-            data:{
-                status: status as FriendshipStatus,
-                senderId: profile.id
-            }
-        })
 
         const friendtwo = await db.profile.findFirst({
             where: {
@@ -68,19 +62,7 @@ export default async function handler(
             }
         })
 
-        if(status === "ACCEPTED"){
-            const acceptedKey = `friends:${profile.id}:accepted`;
-
-            res?.socket?.server?.io?.emit(acceptedKey, friendtwo);
-        }else if(status === "DENIED"){
-            const deniedKey = `friends:${profile.id}:denied`;
-            
-            res?.socket?.server?.io?.emit(deniedKey, friendtwo);
-        }else if(status === "BLOCKED"){
-            const blockedKey = `friends:${profile.id}:blocked`;
-
-            res?.socket?.server?.io?.emit(blockedKey, friendtwo);
-        }else if(status === "PENDING"){
+        if(status === "PENDING"){
             const pendingKey = `friends:${profile.id}:pending`;
 
             res?.socket?.server?.io?.emit(pendingKey, friendtwo);

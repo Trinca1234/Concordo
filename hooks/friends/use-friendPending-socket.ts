@@ -8,13 +8,15 @@ type FriendSocketProps = {
     acceptedKey: string,
     deniedKey: string,
     blockedKey: string,
+    pendingKey: string,
 }
 
-export const useFriendSocket = ({   
+export const useFriendPendingSocket = ({   
     queryKey,
     acceptedKey,
     deniedKey,
     blockedKey,
+    pendingKey,
 }: FriendSocketProps) =>{
     const { socket } = useSocket(); 
     const queryClient = useQueryClient();
@@ -24,8 +26,8 @@ export const useFriendSocket = ({
             return;
         }
 
-        socket.on(acceptedKey, (friend: Friends) => {
-            console.log(`Received accept for friend ${friend.id}`);
+        socket.on(pendingKey, (friend: Friends) => {
+            console.log(`Received pending for friend ${friend.id}`);
             queryClient.setQueryData([queryKey], (oldData: any) =>{
 
                 if(!oldData || !oldData.pages || oldData.pages.length === 0){
@@ -38,6 +40,7 @@ export const useFriendSocket = ({
                 if (!isFriendAlreadyThere) {
                     newData[0].push(friend);
                 }
+                console.log(newData)
 
                 return{
                     ...oldData,
@@ -46,8 +49,8 @@ export const useFriendSocket = ({
             })
         });
 
-        socket.on(deniedKey, (friend: Friends) => {
-            console.log(`Received denie for friend ${friend.id}`);
+        socket.on(blockedKey, (friend: Friends) => {
+            console.log(`Received block for friend ${friend.id}`);
             queryClient.setQueryData([queryKey], (oldData: any) => {
         
                 if (!oldData || !oldData.pages || oldData.pages.length === 0) {
@@ -69,8 +72,33 @@ export const useFriendSocket = ({
             });
         });
 
-        socket.on(blockedKey, (friend: Friends) => {
-            console.log(`Received block for friend ${friend.id}`);
+        socket.on(deniedKey, (friend: Friends) => {
+            console.log(`Received denie for friend ${friend.id}`);
+            queryClient.setQueryData([queryKey], (oldData: any) => {
+        
+                if (!oldData || !oldData.pages || oldData.pages.length === 0) {
+                    return oldData;
+                }
+        
+                const newData = [...oldData.pages];
+                
+                const pageIndex = newData[0].findIndex((existingFriend: Friends) => existingFriend.id === friend.id);
+                
+                if (pageIndex !== -1) {
+                    newData[0].splice(pageIndex, 1);
+                }
+
+                console.log(newData);
+        
+                return {
+                    ...oldData,
+                    pages: newData,
+                };
+            });
+        });
+
+        socket.on(acceptedKey, (friend: Friends) => {
+            console.log(`Received accept for friend ${friend.id}`);
             queryClient.setQueryData([queryKey], (oldData: any) => {
         
                 if (!oldData || !oldData.pages || oldData.pages.length === 0) {
@@ -96,7 +124,6 @@ export const useFriendSocket = ({
         return() =>{
             socket.off(acceptedKey);
             socket.off(deniedKey);
-            socket.off(blockedKey);
         }
 
     }, [queryClient, acceptedKey, queryKey, socket, deniedKey]);

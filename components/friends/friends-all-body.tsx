@@ -26,7 +26,7 @@ export const FriendsAllBody = ({
     const paramValue = "ACCEPTED";
 
     const { 
-        data, 
+        data,
         status 
     } = useFriendQuery({
         queryKey,
