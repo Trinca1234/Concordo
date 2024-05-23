@@ -15,6 +15,8 @@ import qs from "query-string";
 import { DmsUser } from "../dms/dms-user";
 import { DropdownMenuLabel } from "../ui/dropdown-menu";
 import { DmMobileTogle } from "../mobile-toggle-dm";
+import { useFriendQuery } from "@/hooks/friends/use-friend-query";
+import { useFriendSocket } from "@/hooks/friends/use-friend-socket";
 
 interface FriendsHeaderProp {
     profile: Profile;
@@ -22,26 +24,24 @@ interface FriendsHeaderProp {
  
 
 export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{ 
-    const [notifications, setNotifications] = useState<{ id: string; name: string; imageUrl: string; content: String }[]>([]);
+    const queryKey = `friends:`;
+    const acceptedKey = `friends:${profile.id}:accepted`;
+    const deniedKey = `friends:${profile.id}:denied`;
+    const blockedKey = `friends:${profile.id}:blocked`;
+    const apiUrl = "/api/friends/getUsers";
+    const paramKey = "status";
+    const paramValue = "ACCEPTED";
 
-    async function fetchNotifications() {
-        try {
-            const url = qs.stringifyUrl({
-                url: "/api/notifications/getNotifications",
-            });
-            
-            const response = await axios.get(url);
-            setNotifications(response.data);
-        } catch (error) {
-            console.error("Error fetching notifications:", error);
-        }
-    }
-    
-    useEffect(() => {
-        const intervalId = setInterval(fetchNotifications, 2000);
-        fetchNotifications();
-        return () => clearInterval(intervalId);
-    }, []);
+    const { 
+        data,
+        status 
+    } = useFriendQuery({
+        queryKey,
+        apiUrl,
+        paramKey,
+        paramValue
+    });
+    useFriendSocket({ queryKey, deniedKey, acceptedKey, blockedKey});
 
 
     const {onOpen} = useModal();

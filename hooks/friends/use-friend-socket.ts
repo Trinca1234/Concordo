@@ -1,6 +1,7 @@
 import { useSocket } from "@/components/providers/socket-provider"
 import { Friends, Server } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 type FriendSocketProps = {
@@ -18,6 +19,7 @@ export const useFriendSocket = ({
 }: FriendSocketProps) =>{
     const { socket } = useSocket(); 
     const queryClient = useQueryClient();
+    const router = useRouter();
 
     useEffect(()=>{
         if(!socket){
@@ -39,6 +41,9 @@ export const useFriendSocket = ({
                     newData[0].push(friend);
                 }
 
+                console.log(newData);
+                router.refresh();
+                
                 return{
                     ...oldData,
                     pages: newData,
@@ -47,7 +52,7 @@ export const useFriendSocket = ({
         });
 
         socket.on(deniedKey, (friend: Friends) => {
-            console.log(`Received denie for friend ${friend.id}`);
+            console.log(`Received denie from friend ${friend.id}`);
             queryClient.setQueryData([queryKey], (oldData: any) => {
         
                 if (!oldData || !oldData.pages || oldData.pages.length === 0) {
@@ -61,6 +66,9 @@ export const useFriendSocket = ({
                 if (pageIndex !== -1) {
                     newData[0].splice(pageIndex, 1);
                 }
+
+                console.log(newData);
+                router.refresh();
         
                 return {
                     ...oldData,
@@ -84,6 +92,9 @@ export const useFriendSocket = ({
                 if (pageIndex !== -1) {
                     newData[0].splice(pageIndex, 1);
                 }
+
+                console.log(newData);
+                router.refresh();
         
                 return {
                     ...oldData,

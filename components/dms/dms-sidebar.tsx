@@ -1,19 +1,13 @@
 "use client"
-import { currentProfile } from "@/lib/current-profile";
-import { db } from "@/lib/db";
-import { redirect } from "next/navigation";
 import { DmsSearch } from "./dms-search";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
 import { DmsUser } from "./dms-user";
 import { Fragment, useEffect, useState } from "react";
-import qs from "query-string";
-import axios from "axios";
 import { Loader2, ServerCrash } from "lucide-react";
 import { SocketIndicator } from "../socket-indicator";
 import { useFriendQuery } from "@/hooks/friends/use-friend-query";
 import { useFriendSocket } from "@/hooks/friends/use-friend-socket";
-import { FriendshipStatus } from "@prisma/client";
 
 type users = {
     id: string,

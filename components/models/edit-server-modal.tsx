@@ -71,7 +71,7 @@ export const EditServerModal = () => {
                 url: `/api/socket/servers/${server?.id}`,
                 query: {
                     name: values.name,
-                    imageUrl: values.imageUrl
+                    imageUrl: values.imageUrl 
                 },
             });
             await axios.patch(url);

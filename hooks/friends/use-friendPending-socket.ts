@@ -1,6 +1,7 @@
 import { useSocket } from "@/components/providers/socket-provider"
 import { Friends, Server } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 type FriendSocketProps = {
@@ -20,6 +21,7 @@ export const useFriendPendingSocket = ({
 }: FriendSocketProps) =>{
     const { socket } = useSocket(); 
     const queryClient = useQueryClient();
+    const router = useRouter();
 
     useEffect(()=>{
         if(!socket){
@@ -40,7 +42,9 @@ export const useFriendPendingSocket = ({
                 if (!isFriendAlreadyThere) {
                     newData[0].push(friend);
                 }
-                console.log(newData)
+
+                console.log(newData);
+                router.refresh();
 
                 return{
                     ...oldData,
@@ -64,6 +68,9 @@ export const useFriendPendingSocket = ({
                 if (pageIndex !== -1) {
                     newData[0].splice(pageIndex, 1);
                 }
+
+                console.log(newData);
+                router.refresh();
         
                 return {
                     ...oldData,
@@ -89,6 +96,7 @@ export const useFriendPendingSocket = ({
                 }
 
                 console.log(newData);
+                router.refresh();
         
                 return {
                     ...oldData,
@@ -112,6 +120,9 @@ export const useFriendPendingSocket = ({
                 if (pageIndex !== -1) {
                     newData[0].splice(pageIndex, 1);
                 }
+
+                console.log(newData);
+                router.refresh();
         
                 return {
                     ...oldData,
@@ -124,6 +135,8 @@ export const useFriendPendingSocket = ({
         return() =>{
             socket.off(acceptedKey);
             socket.off(deniedKey);
+            socket.off(blockedKey);
+            socket.off(pendingKey);
         }
 
     }, [queryClient, acceptedKey, queryKey, socket, deniedKey]);

@@ -4,7 +4,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import { DmsUser } from "../dms/dms-user";
 import qs from "query-string";
 import axios from "axios";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2, Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { useFriendPendingSocket } from "@/hooks/friends/use-friendPending-socket";
@@ -46,9 +46,9 @@ export const FriendsPendingBody = ({
     });
     useFriendPendingSocket({ queryKey, deniedKey, acceptedKey, pendingKey, blockedKey });
 
-    /* const filteredUsers = data?.pages.flat().filter(user =>
+    const filteredUsers = data?.pages.flat().filter(user =>
         user.name.toLowerCase().includes(searchQuery.toLowerCase())
-    ) || []; */
+    ) || [];
     
     if (status == "pending") {
         return (
@@ -83,7 +83,7 @@ export const FriendsPendingBody = ({
                     PENDING REQUESTS
                 </p>
                 <ScrollArea className="flex px-3">
-                    {/* {filteredUsers.length ? (
+                    {filteredUsers.length ? (
                         <div className="mb-2">
                             <div className="space-y-[2px]">
                                 {filteredUsers.map(user => (
@@ -97,24 +97,7 @@ export const FriendsPendingBody = ({
                         <div className="flex flex-col justify-center items-center text-zinc-500 dark:text-zinc-400 mt-20">
                             <p>No matching users found.</p>
                         </div>
-                    )} */}
-                        {data?.pages?.length ? (
-                            data.pages.map((page, i) => (
-                                <Fragment key={i}>
-                                    {page?.map((user: users) => (
-                                        <DmsUser
-                                            key={user.id}
-                                            profile={user}
-                                            type="Pending1"
-                                        />
-                                    ))}
-                                </Fragment>
-                            ))
-                        ) : (
-                            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                                You have no friends ;-;
-                            </p>
-                        )}
+                    )}
                 </ScrollArea>
             </div>
         </div>

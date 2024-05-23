@@ -38,10 +38,6 @@ export const FriendsBlockedBody = ({
     });
     useFriendBlockSocket({ queryKey, deniedKey, acceptedKey, blockedKey });
 
-    console.log(data);
-
-    console.log(status);
-
     const filteredUsers = data?.pages.flat().filter(user =>
         user.name.toLowerCase().includes(searchQuery.toLowerCase())
     ) || [];

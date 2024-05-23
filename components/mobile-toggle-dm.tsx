@@ -8,7 +8,7 @@ import{
 import { Button } from "@/components/ui/button";
 import { NavigationSidebar } from "@/components/navigation/navigation-sidebar";
 import { DmsSidebar } from "./dms/dms-sidebar";
-import { currentProfile } from "@/lib/current-profile";
+import { FriendsAllBody } from "./friends/friends-all-body";
 
 interface DmMobileProps {
     profileId: string;
@@ -26,9 +26,10 @@ export const DmMobileTogle = ({
             </SheetTrigger>
             <SheetContent side="left" className="p-0 flex gap-0">
                 <div className="w-[72px]">
-                    <NavigationSidebar profileId={profileId} /> 
+                    <NavigationSidebar profileId={profileId} />
                 </div>
-            <DmsSidebar profileId={profileId} />
+                {/* <FriendsAllBody profileId={profile} /> */}
+                <DmsSidebar profileId={profileId} />
             </SheetContent>
         </Sheet>
     )

@@ -1,26 +1,27 @@
 "use client"
 
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
 import { Input } from "../ui/input";
 import { Loader2, Search } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import { DmsUser } from "../dms/dms-user";
 import { useFriendQuery } from "@/hooks/friends/use-friend-query";
 import { useFriendSocket } from "@/hooks/friends/use-friend-socket";
+import { Profile } from "@prisma/client";
 
 interface FriendsAllProps {
-    profileId: string;
-}
+    profile: Profile;
+} 
 
 export const FriendsAllBody = ({
-    profileId 
+    profile 
 }: FriendsAllProps) => {
     const [searchQuery, setSearchQuery] = useState("");
 
     const queryKey = `friends:`;
-    const acceptedKey = `friends:${profileId}:accepted`;
-    const deniedKey = `friends:${profileId}:denied`;
-    const blockedKey = `friends:${profileId}:blocked`;
+    const acceptedKey = `friends:${profile.id}:accepted`;
+    const deniedKey = `friends:${profile.id}:denied`;
+    const blockedKey = `friends:${profile.id}:blocked`;
     const apiUrl = "/api/friends/getUsers";
     const paramKey = "status";
     const paramValue = "ACCEPTED";
@@ -34,7 +35,7 @@ export const FriendsAllBody = ({
         paramKey,
         paramValue
     });
-    useFriendSocket({ queryKey, deniedKey, acceptedKey, blockedKey });
+    useFriendSocket({ queryKey, deniedKey, acceptedKey, blockedKey});
 
     const filteredUsers = data?.pages.flat().filter(user =>
         user.name.toLowerCase().includes(searchQuery.toLowerCase())
