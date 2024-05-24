@@ -41,7 +41,6 @@ export const useFriendSocket = ({
                     newData[0].push(friend);
                 }
 
-                console.log(newData);
                 router.refresh();
                 
                 return{
@@ -67,7 +66,6 @@ export const useFriendSocket = ({
                     newData[0].splice(pageIndex, 1);
                 }
 
-                console.log(newData);
                 router.refresh();
         
                 return {
@@ -93,7 +91,6 @@ export const useFriendSocket = ({
                     newData[0].splice(pageIndex, 1);
                 }
 
-                console.log(newData);
                 router.refresh();
         
                 return {

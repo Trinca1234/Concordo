@@ -6,7 +6,6 @@ export const getOrCreateConversation = async (profileOneId: string, profileTwoId
     let friendship = await findFriendship(profileOneId, profileTwoId)
     let type = 1
     if (typeof friendship === 'string') {
-        console.log("é string")
         return null;
     }
     if(!friendship){

@@ -52,7 +52,8 @@ export const MembersModal = () => {
     const onKick = async (memberId: string) =>{
         try{
             setLoadingId(memberId);
-            const url = qs.stringifyUrl({
+            console.log(memberId);
+            /* const url = qs.stringifyUrl({
                 url: `/api/members/${memberId}`,
                 query:{
                     serverId: server?.id,
@@ -61,8 +62,8 @@ export const MembersModal = () => {
  
             const response = await axios.delete(url);
 
-            router.refresh();
-            onOpen("members", { server: response.data });
+            router.refresh(); */
+            /* onOpen("members", { server: response.data }); */
 
         }catch (error) {
             console.log(error);

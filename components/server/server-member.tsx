@@ -15,12 +15,13 @@ import {
     TabsList,
     TabsTrigger,
   } from "@/components/ui/tabs"
-  import axios from "axios";
-  import qs from "query-string";
+import axios from "axios";
+import qs from "query-string";
 import { useEffect, useState } from "react";
 import { getOrCreateFriendship } from "@/lib/friend";
 import { ActionTooltip } from "../action-tooltip";
 import { useModal } from "@/hooks/use-modal-store";
+import { ScrollArea } from "../ui/scroll-area";
 
 interface ServerMemberProps{
     member: Member & {profile: Profile};
@@ -43,14 +44,66 @@ export const ServerMember = ({
     const [mutualFriends, setMutualFriends] = useState<{ id: string; name: string; imageUrl: string; }[]>([]);
     const [mutualServers, setMutualServers] = useState<{ id: string; name: string; imageUrl: string; }[]>([]);
     const [friendship, setFriendship] = useState(false);
+    const [friendRequestSent, setFriendRequestSent] = useState(false);
+    const [friendBlock, setFriendBlocked] = useState(false);
     const { onOpen } = useModal();
 
     const icon = roleIconMap[member.role];
 
     const SendFriendRequest = async () =>{
-        const friendship = getOrCreateFriendship(profile.id, member.profile.email, profile.id)
-        console.log(friendship)
+        try {
+            await getOrCreateFriendship(profile.id, member.profile.email, profile.id);
+            setFriendRequestSent(true);
+        } catch (error) {
+            console.error("Error sending friend request:", error);
+        }
     }
+
+    const checkFriendship = async () =>{
+        try {
+            const url =  qs.stringifyUrl({
+                url: "/api/friends/findFriendship",
+                query: {
+                    OneId: profile.id,
+                    TwoId: member.profileId
+                }
+            });
+    
+            const response = await axios.get(url);
+
+            if(response.data === "Non existent friendship"){
+                const url =  qs.stringifyUrl({
+                    url: "/api/friends/findFriendship",
+                    query: {
+                        OneId: member.profileId,
+                        TwoId: profile.id
+                    }
+                });
+        
+                const response = await axios.get(url);
+
+                if(response.data == "Already sent friend request"){
+                    setFriendRequestSent(true);
+                }
+                else if(response.data == "User blocked")
+                {
+                    setFriendBlocked(true);
+                }
+            }
+            else if(response.data == "Already sent friend request"){
+                setFriendRequestSent(true);
+            }
+            else if(response.data == "User blocked")
+            {
+                setFriendBlocked(true);
+            }
+            
+        } catch (error) {
+            console.error("Error checking friendship:", error);
+        }
+    }
+
+    checkFriendship();
 
     const SendMessage = () =>{
         router.push(`/dms/conversations/${member.profileId}`)
@@ -66,8 +119,6 @@ export const ServerMember = ({
             });
     
             const response = await axios.patch(url);
-
-            console.log(response);
 
             router.refresh();
         } catch (error) {
@@ -101,8 +152,6 @@ export const ServerMember = ({
             }); 
             
             const friendship = await axios.get(url);
-            console.log(member.profileId);
-            console.log(friendship.data);
             setFriendship(friendship.data);
 
             const url2 = qs.stringifyUrl({
@@ -113,8 +162,6 @@ export const ServerMember = ({
             }); 
             
             const users = await axios.get(url2);
-            console.log(member.profileId);
-            console.log(users);
             if(users.data === "No mutual friends found"){
                 setMutualFriends([]);
             }else{
@@ -129,17 +176,18 @@ export const ServerMember = ({
             });
             
             const servers = await axios.get(url3);
-            console.log(member.profileId);
-            console.log(servers);
+            
             setMutualServers(servers.data);
         } catch (error) {
             console.error("Error fetching users:", error);
         }
     }
 
+    const isDesktop = useMediaQuery({ query: '(min-width: 770px)' });
+
     return(
         <Popover>
-            <PopoverTrigger asChild>
+            <PopoverTrigger asChild>    
                 <button
                     onClick={fetchUsers}
                     className={cn(
@@ -162,21 +210,31 @@ export const ServerMember = ({
                     {icon}
                 </button>
             </PopoverTrigger>
-            <PopoverContent className="w-200 h-400 bg-zinc-700" side="right">
+            <PopoverContent className="w-200 h-400 bg-zinc-700" side={isDesktop ? "right" : "bottom"}>
                 <div className="grid gap-4">
                     <div className="flex items-end space-x-4">
                         <UserAvatar 
                             src={member.profile.imageUrl}
                             className="h-8 w-8 md:h-24 md:w-24"
                         />
-                        {friendship === true &&(
-                            <Button onClick={SendMessage} className=" bg-green-600 font-bold">
+                        {friendship === true && !friendBlock && (
+                            <Button onClick={SendMessage} className="bg-green-600 font-bold">
                                 Send Message
                             </Button>
                         )}
-                        {friendship !== true &&(
-                            <Button onClick={SendFriendRequest} className=" bg-green-600 font-bold">
-                                Send Friend Request
+                        {friendship === true && friendBlock && (
+                            <Button disabled className="bg-red-500 font-bold text-black">
+                                Blocked
+                            </Button>
+                        )}
+                        {friendship !== true && !friendBlock && (
+                            <Button onClick={SendFriendRequest} className="bg-green-600 font-bold">
+                                {friendRequestSent ? "Sent Friend Request" : "Send Friend Request"} {/* Update button text */}
+                            </Button>
+                        )}
+                        {friendship !== true && friendBlock && (
+                            <Button disabled className="bg-red-600 font-bold text-black">
+                                Blocked
                             </Button>
                         )}
                         <DropdownMenu>
@@ -187,7 +245,7 @@ export const ServerMember = ({
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className=" w-40">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
+                                <DropdownMenuSeparator/>
                                 <DropdownMenuGroup>
                                     {friendship === true &&(
                                         <>
@@ -222,41 +280,35 @@ export const ServerMember = ({
                                 <TabsTrigger value="Servers">Mutual Servers</TabsTrigger>
                             </TabsList>
                             <TabsContent value="Friends">
-                                <div className="flex flex-col gap-y-4">
-                                    {mutualFriends && mutualFriends.length > 0 ? (
-                                        mutualFriends.map(friend => (
-                                            <div key={friend.id} className="flex items-center">
-                                                <UserAvatar
-                                                    src={friend.imageUrl}
-                                                    className="h-14 w-8 md:h-14 md:w-14"
-                                                />
-                                                <p className="font-semibold text-base pl-2 text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-300 dark:group-hover:text-zinc-300 transition">
-                                                    {friend.name}
-                                                </p>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <p>No mutual friends found.</p>
-                                    )}
+                                <div className="flex flex-col gap-y-4 overflow-y-auto h-full w-full border">
+                                    {mutualFriends.map(friend => (
+                                        <div key={friend.id} className="flex py-1 items-center">
+                                            <UserAvatar
+                                                src={friend.imageUrl}
+                                                className="h-8 w-8 md:h-14 md:w-14"
+                                            />
+                                            <p className="font-semibold text-base pl-2 text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-300 dark:group-hover:text-zinc-300 transition">
+                                                {friend.name}
+                                            </p>
+                                        </div>
+                                    ))}
+                                    {mutualFriends.length === 0 && <p>No mutual friends found.</p>}
                                 </div>
                             </TabsContent>
                             <TabsContent value="Servers">
-                                <div className="flex flex-col gap-y-4">
-                                    {mutualServers.length > 0 ? (
-                                        mutualServers.map(server => (
-                                            <div key={server.id} className="flex items-center">
-                                                <UserAvatar
-                                                    src={server.imageUrl}
-                                                    className="h-14 w-8 md:h-14 md:w-14"
-                                                />
-                                                <p className="font-semibold text-base pl-2 text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-300 dark:group-hover:text-zinc-300 transition">
-                                                    {server.name}
-                                                </p>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <p>No mutual servers found.</p>
-                                    )}
+                                <div className="flex flex-col gap-y-4 overflow-y-auto h-full w-full border">
+                                    {mutualServers.map(server => (
+                                        <div key={server.id} className="flex items-center py-1">
+                                            <UserAvatar
+                                                src={server.imageUrl}
+                                                className="h-8 w-8 md:h-14 md:w-14"
+                                            />
+                                            <p className="font-semibold text-base pl-2 text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-300 dark:group-hover:text-zinc-300 transition">
+                                                {server.name}
+                                            </p>
+                                        </div>
+                                    ))}
+                                    {mutualServers.length === 0 && <p>No mutual servers found.</p>}
                                 </div>
                             </TabsContent>
                         </Tabs>

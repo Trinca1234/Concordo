@@ -64,7 +64,6 @@ export const CreateServerModal = () => {
                     imageUrl: values.imageUrl
                 },
             });
-            console.log("emmiting server:add");
             await axios.post(url);
             form.reset();
             router.refresh();

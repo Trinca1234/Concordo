@@ -26,28 +26,32 @@ export const useFriendBlockSocket = ({
             return;
         }
 
-        socket.on(blockedKey, (friend: Friends) => {
+        socket.on(blockedKey, (friend: any) => {
             console.log(`Received block for friend ${friend.id}`);
-            queryClient.setQueryData([queryKey], (oldData: any) =>{
-                if(!oldData || !oldData.pages || oldData.pages.length === 0){
-                    return oldData;
-                }
-                const newData = [...oldData.pages];
-                
-                const isFriendAlreadyThere = newData[0].some((existingFriend: Friends) => existingFriend.id === friend.id);
-                
-                if (!isFriendAlreadyThere) {
-                    newData[0].push(friend);
-                }
-
-                console.log(newData);
-                router.refresh();
-
-                return{
-                    ...oldData,
-                    pages: newData,
-                }
-            })
+            if(friend.type === "Bloqueaste"){
+                queryClient.setQueryData([queryKey], (oldData: any) =>{
+                    if(!oldData || !oldData.pages || oldData.pages.length === 0){
+                        return oldData;
+                    }
+                    const newData = [...oldData.pages];
+                    
+                    const isFriendAlreadyThere = newData[0].some((existingFriend: any) => existingFriend.id === friend.id);
+                    
+                    if (!isFriendAlreadyThere) {
+                        newData[0].push(friend);
+                    }
+    
+                    router.refresh();
+    
+                    return{
+                        ...oldData,
+                        pages: newData,
+                    }
+                })
+            }
+            else{
+                return
+            }
         });
 
         socket.on(deniedKey, (friend: Friends) => {
@@ -66,7 +70,6 @@ export const useFriendBlockSocket = ({
                     newData[0].splice(pageIndex, 1);
                 }
 
-                console.log(newData);
                 router.refresh();
         
                 return {
@@ -92,7 +95,6 @@ export const useFriendBlockSocket = ({
                     newData[0].splice(pageIndex, 1);
                 }
 
-                console.log(newData);
                 router.refresh();
         
                 return {

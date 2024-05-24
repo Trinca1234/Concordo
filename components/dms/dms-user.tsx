@@ -31,11 +31,9 @@ export const DmsUser = ({
 
     const onClick = (type: string) => {
         if(type === "Pending3"){
-            console.log("pending");
             router.push(`/dms/friends/pending`);
         }
         if(type === "Accepted"|| type === "users"){
-            console.log("conversation");
             router.push(`/dms/conversations/${profile.id}`)
         }
         else{
@@ -56,8 +54,6 @@ export const DmsUser = ({
             const response = await axios.patch(url);
 
             if(response.status == 200){
-
-                console.log("vai para a second key")
                 const url = qs.stringifyUrl({
                     url: `/api/socket/secondKey`,
                     query:{
@@ -67,8 +63,6 @@ export const DmsUser = ({
                 })
 
                 const response = await axios.get(url);
-
-                console.log(response)
             }
 
             router.refresh();
@@ -79,7 +73,6 @@ export const DmsUser = ({
 
     async function onDecline() {
         try {
-            console.log("vai para o denied");
             const url =  qs.stringifyUrl({
                 url: `/api/socket/friends/update`,
                 query: {
@@ -91,8 +84,6 @@ export const DmsUser = ({
             const response = await axios.patch(url);
 
             if(response.status == 200){
-
-                console.log("vai para a second key")
                 const url = qs.stringifyUrl({
                     url: `/api/socket/secondKey`,
                     query:{
@@ -102,8 +93,6 @@ export const DmsUser = ({
                 })
 
                 const response = await axios.get(url);
-
-                console.log(response)
             }
 
             router.refresh();
@@ -125,8 +114,6 @@ export const DmsUser = ({
             const response = await axios.patch(url);
 
             if(response.status == 200){
-
-                console.log("vai para a second key")
                 const url = qs.stringifyUrl({
                     url: `/api/socket/secondKey`,
                     query:{
@@ -136,11 +123,7 @@ export const DmsUser = ({
                 })
 
                 const response = await axios.get(url);
-
-                console.log(response)
             }
-
-            console.log(response);
 
             router.refresh();
         } catch (error) {
@@ -161,8 +144,6 @@ export const DmsUser = ({
             const response = await axios.patch(url);
 
             if(response.status == 200){
-
-                console.log("vai para a second key")
                 const url = qs.stringifyUrl({
                     url: `/api/socket/secondKey`,
                     query:{
@@ -171,12 +152,8 @@ export const DmsUser = ({
                     }
                 })
 
-                const response = await axios.get(url);
-
-                console.log(response)
+                await axios.get(url);
             }
-
-            console.log(response);
 
             router.refresh();
         } catch (error) {

@@ -122,22 +122,21 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
                         <button
                         className="w-full text-md font-semibold px-3 flex items-center h-12  hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"
                         >
-                            {notifications.length > 0 ? (
+                            {/* {notifications.length > 0 ? (
                                 <div className="relative">
                                     <Bell className="mx-2"/>
                                     <span className="bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center absolute -top-1 -right-1">{notifications.length}</span>
                                 </div>
                             ) : (
                                 <Bell className=" mx-2"/>
-                            )}
+                            )} */}
                         </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                     style={{ zIndex: 900 }}
                     className="w-56 mr-12 text-xs font-medium text-black dark:text-neutral-400 space-y-[2px] bg-zinc-700 dark:bg-zinc-900"
                     >
-                        
-                            {notifications.length > 0 ? (
+                            {/* {notifications.length > 0 ? (
                                 <>
                                     <DropdownMenuLabel>Pending requests</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
@@ -148,7 +147,7 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
                                             <div className="space-y-[2px} ">
                                                 {notifications.map(user => (
                                                     <div key={user.id} className="border-t border-zinc-200 dark:border-zinc-700">
-                                                        {/* <DmsUser profile={user} type={"Pending3"}/> */}
+                                                        <DmsUser profile={user} type={"Pending3"}/>
                                                     </div>
                                                 ))}
                                             </div>
@@ -161,9 +160,7 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
                                 >
                                     <span>No notifications</span>
                                 </DropdownMenuItem>
-                            )}
-                        
-                        
+                            )} */}
                     </DropdownMenuContent>
                 </DropdownMenu>
                 <button

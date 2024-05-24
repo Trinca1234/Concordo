@@ -91,7 +91,7 @@ export async function GET(
                     const repo = {
                         friendtwo: p.friendOneId,
                         type: "Pending2"
-                    }
+                    } 
                     return repo;
                 }
             });

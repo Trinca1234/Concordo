@@ -24,7 +24,6 @@ export const FriendsPendingBody = ({
     profileId
 }: FriendsPendingProps) => {
     const [searchQuery, setSearchQuery] = useState("");
-    const [users, setUsers] = useState<{ id: string; name: string; imageUrl: string; }[]>([]);
 
     const queryKey = `pending:`;
     const acceptedKey = `friends:${profileId}:accepted`;
@@ -88,7 +87,7 @@ export const FriendsPendingBody = ({
                             <div className="space-y-[2px]">
                                 {filteredUsers.map(user => (
                                     <div key={user.id} className="border-t border-zinc-200 dark:border-zinc-700">
-                                        <DmsUser profile={user} type={"Pending2"} />
+                                        <DmsUser profile={user} type={user.type} />
                                     </div>
                                 ))}
                             </div>

@@ -63,7 +63,7 @@ export const FriendsBlockedBody = ({
             </div>
         );
     }
- 
+  
     return (
         <div className="text-md mt-4 font-semibold px-3 h-14 ">
             <div>

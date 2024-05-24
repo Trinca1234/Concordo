@@ -68,23 +68,29 @@ export default async function handler(
             }
         })
 
-        if(status === "ACCEPTED"){
-            const acceptedKey = `friends:${profile.id}:accepted`;
+        let eventKey = '';
+        let dataToEmit = friendtwo;
 
-            res?.socket?.server?.io?.emit(acceptedKey, friendtwo);
-        }else if(status === "DENIED"){
-            const deniedKey = `friends:${profile.id}:denied`;
-            
-            res?.socket?.server?.io?.emit(deniedKey, friendtwo);
-        }else if(status === "BLOCKED"){
-            const blockedKey = `friends:${profile.id}:blocked`;
-
-            res?.socket?.server?.io?.emit(blockedKey, friendtwo);
-        }else if(status === "PENDING"){
-            const pendingKey = `friends:${profile.id}:pending`;
-
-            res?.socket?.server?.io?.emit(pendingKey, friendtwo);
+        switch (status) {
+            case "ACCEPTED":
+                eventKey = `friends:${profile.id}:accepted`;
+                break;
+            case "DENIED":
+                eventKey = `friends:${profile.id}:denied`;
+                break;
+            case "BLOCKED":
+                eventKey = `friends:${profile.id}:blocked`;
+                dataToEmit = { ...friendtwo, type: "Bloqueaste" } as typeof friendtwo & { type: string };
+                break;
+            case "PENDING":
+                eventKey = `friends:${profile.id}:pending`;
+                dataToEmit = { ...friendtwo, type: "Pending1" } as typeof friendtwo & { type: string };
+                break;
+            default:
+                return res.status(400).json({ error: "Invalid status" });
         }
+
+        res?.socket?.server?.io?.emit(eventKey, dataToEmit);
 
         return res.status(200).json(friendship);
     }catch(error){

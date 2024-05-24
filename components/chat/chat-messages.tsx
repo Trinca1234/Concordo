@@ -60,14 +60,15 @@ export const ChatMessages = ({
         paramKey,
         paramValue,
     });
+
     useChatSocket({queryKey, addKey, updateKey});
     useChatScroll({
         chatRef, 
         bottomRef, 
         loadMore: fetchNextPage, 
         shouldLoadMore: !isFetchingNextPage && !!hasNextPage,
-        count:data?.pages?.[0]?.items?.length ?? 0,
-    })
+        count: data?.pages?.flatMap(page => page.items).length ?? 0,
+    });
 
     if(status === "pending"){
         return(
@@ -77,7 +78,7 @@ export const ChatMessages = ({
                     Loading messages ...
                 </p>
             </div>
-        )
+        );
     }
 
     if(status === "error"){
@@ -88,7 +89,7 @@ export const ChatMessages = ({
                     Something went wrong
                 </p>
             </div>
-        )
+        );
     }
 
     return(
@@ -114,7 +115,7 @@ export const ChatMessages = ({
                 </div>
             )} 
             <div className="flex flex-col-reverse mt-auto"> 
-                {data?.pages?.map((group, i)=>(
+                {data?.pages?.map((group, i) => (
                     <Fragment key={i}>
                         {group.items.map((message: MessageWithMemberWithProfile) => (
                             <ChatItem 
@@ -136,5 +137,5 @@ export const ChatMessages = ({
             </div>
             <div ref={bottomRef} />
         </div>
-    )
-}
+    );
+};

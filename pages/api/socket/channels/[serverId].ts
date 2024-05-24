@@ -65,8 +65,6 @@ export default async function handler(
             });
 
             const updateKey = `channels:${serverId}:update`;
-
-            console.log("emmiting key: ",updateKey)
             
             res?.socket?.server?.io?.emit(updateKey, server);
             
@@ -120,8 +118,6 @@ export default async function handler(
             });
 
             const updateKey = `channels:${serverId}:update`;
-
-            console.log("emmiting key: ",updateKey)
             
             res?.socket?.server?.io?.emit(updateKey, server);
             
@@ -178,8 +174,6 @@ export default async function handler(
             });
 
             const updateKey = `channels:${serverId}:update`;
-
-            console.log("emmiting key: ",updateKey)
             
             res?.socket?.server?.io?.emit(updateKey, server);
             

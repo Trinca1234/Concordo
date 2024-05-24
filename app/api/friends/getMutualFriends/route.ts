@@ -18,7 +18,6 @@ export async function GET(
         if (!profile) {
             return new NextResponse("Profile missing", { status: 400 });
         }
-        console.log(profile.id);
 
         const profileFriends = await db.friends.findMany({
             where:{
@@ -42,9 +41,6 @@ export async function GET(
             }
         });
 
-        console.log(profile.id);
-        console.log(profileFriendIds);
-
         const userFriends = await db.friends.findMany({
             where:{
                 status: "ACCEPTED",
@@ -67,11 +63,7 @@ export async function GET(
             }
         });
 
-        console.log(userId);
-        console.log(userFriendIds);
-
         const mutualFriendIds = userFriendIds.filter(id => profileFriendIds.includes(id));
-        console.log(mutualFriendIds)
 
         if (mutualFriendIds.length === 0) {
             return new NextResponse("No mutual friends found", { status: 201 });

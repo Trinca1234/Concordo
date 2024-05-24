@@ -28,7 +28,7 @@ export const useFriendPendingSocket = ({
             return;
         }
 
-        socket.on(pendingKey, (friend: Friends) => {
+        socket.on(pendingKey, (friend: any) => {
             console.log(`Received pending for friend ${friend.id}`);
             queryClient.setQueryData([queryKey], (oldData: any) =>{
 
@@ -37,13 +37,12 @@ export const useFriendPendingSocket = ({
                 }
                 const newData = [...oldData.pages];
                 
-                const isFriendAlreadyThere = newData[0].some((existingFriend: Friends) => existingFriend.id === friend.id);
+                const isFriendAlreadyThere = newData[0].some((existingFriend: any) => existingFriend.id === friend.id);
                 
                 if (!isFriendAlreadyThere) {
                     newData[0].push(friend);
                 }
 
-                console.log(newData);
                 router.refresh();
 
                 return{
@@ -69,7 +68,6 @@ export const useFriendPendingSocket = ({
                     newData[0].splice(pageIndex, 1);
                 }
 
-                console.log(newData);
                 router.refresh();
         
                 return {
@@ -95,7 +93,6 @@ export const useFriendPendingSocket = ({
                     newData[0].splice(pageIndex, 1);
                 }
 
-                console.log(newData);
                 router.refresh();
         
                 return {
@@ -121,7 +118,6 @@ export const useFriendPendingSocket = ({
                     newData[0].splice(pageIndex, 1);
                 }
 
-                console.log(newData);
                 router.refresh();
         
                 return {

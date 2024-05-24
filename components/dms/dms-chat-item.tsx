@@ -232,10 +232,6 @@ export const ChatConversationItem = ({
         if(profile.id === currentProfile.id){
             return;
         }
-        else{
-            console.log(profile);
-        }
-
         router.push(`/dms`);
     }
 
@@ -274,7 +270,6 @@ export const ChatConversationItem = ({
         }catch(error){
             console.log(error);
         }
-        console.log("ola");
     }
 
     useEffect(()=>{

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 type ChatScrollProps = {
     chatRef: React.RefObject<HTMLDivElement>;
@@ -14,49 +14,48 @@ export const useChatScroll = ({
     shouldLoadMore,
     loadMore,
     count,
-}: ChatScrollProps) =>{
+}: ChatScrollProps) => {
     const [hasInitialized, setHasInitialized] = useState(false);
+    const [prevScrollHeight, setPrevScrollHeight] = useState(0);
 
-    useEffect(()=>{
+    useLayoutEffect(() => {
         const topDiv = chatRef?.current;
-        
-        const handleScroll = () =>{
-            const scrollTop = topDiv?.scrollTop;
 
-            if(scrollTop === 0 && shouldLoadMore){
+        const handleScroll = () => {
+            if (topDiv?.scrollTop === 0 && shouldLoadMore) {
+                setPrevScrollHeight(topDiv.scrollHeight);
                 loadMore();
             }
         };
 
         topDiv?.addEventListener("scroll", handleScroll);
 
-        return() => {
+        return () => {
             topDiv?.removeEventListener("scroll", handleScroll);
-        }
-
+        };
     }, [shouldLoadMore, loadMore, chatRef]);
 
-    useEffect(()=>{
+    useLayoutEffect(() => {
         const bottomDiv = bottomRef?.current;
         const topDiv = chatRef.current;
-        const shouldAutoScroll = () =>{
-            if(!hasInitialized && bottomDiv){
+
+        const shouldAutoScroll = () => {
+            if (!hasInitialized && bottomDiv) {
                 setHasInitialized(true);
                 return true;
             }
 
-            if(!topDiv){
+            if (!topDiv) {
                 return false;
             }
 
-            const distanceFromBottom = topDiv.scrollHeight - topDiv.scrollTop - topDiv.clientHeight
+            const distanceFromBottom = topDiv.scrollHeight - topDiv.scrollTop - topDiv.clientHeight;
 
             return distanceFromBottom <= 100;
+        };
 
-        }
-
-        if(shouldAutoScroll()){
-            setTimeout(()=>{
+        if (shouldAutoScroll()) {
+            setTimeout(() => {
                 bottomRef.current?.scrollIntoView({
                     behavior: "smooth",
                 });
@@ -64,4 +63,17 @@ export const useChatScroll = ({
         }
 
     }, [bottomRef, chatRef, count, hasInitialized]);
-}
+
+    useLayoutEffect(() => {
+        const topDiv = chatRef.current;
+    
+        if (topDiv && prevScrollHeight > 0) {
+            const scrollOffset = topDiv.scrollHeight - prevScrollHeight;
+            console.log("Scroll Offset:", scrollOffset);
+            topDiv.scrollTop += scrollOffset;
+            console.log("New ScrollTop:", topDiv.scrollTop);
+            /* setPrevScrollHeight(0); */ // Reset the scroll height
+        }
+    }, [count, chatRef, prevScrollHeight]);
+    
+};

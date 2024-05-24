@@ -53,7 +53,7 @@ export const ReportMessageModal = () => {
             <DialogContent className="bg-white dark:bg-zinc-700 text-white p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
-                        Report message
+                        Report
                     </DialogTitle>
                     <div className="my-4">
                         <DialogDescription className="text-center text-zinc-300 my-4">

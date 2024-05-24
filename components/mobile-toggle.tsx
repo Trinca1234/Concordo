@@ -26,7 +26,7 @@ export const MobileTogle = async ({
                     <Menu/> 
                 </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="p-0 flex gap-0">
+            <SheetContent side="left" className="p-0 flex gap-0 z-50">
                 <div className="w-[72px]">
                     <NavigationSidebar profileId={profile.id} />
                 </div>
