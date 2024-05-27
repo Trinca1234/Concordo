@@ -27,10 +27,9 @@ export async function DELETE(
         const server = await db.server.update({
             where: {
                 id: serverId,
-                profileId: profile.id,
                 members: {
                     some: {
-                        profileId: profile.id,
+                        profileId: params.memberId,
                         status: true,
                     },
                 },
@@ -42,7 +41,7 @@ export async function DELETE(
                       status: false,
                     },
                     where: {
-                      profileId: profile.id,
+                      profileId: params.memberId,
                       status: true,
                     },
                   },

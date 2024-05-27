@@ -80,14 +80,12 @@ export const CreateServerModal = () => {
 
     return (
         <Dialog open={isModalOpen} onOpenChange={handleClose}>
-            <DialogContent className="bg-white text-black p-0 overflow-hidden">
-
+            <DialogContent className="bg-white text-black dark:bg-zinc-700 dark:text-white p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
                         Create your server
                     </DialogTitle>
-
-                    <DialogDescription className="text-center text-zinc-500">
+                    <DialogDescription className="text-center text-zinc-500 dark:text-white/60">
                         Give your server a personality with a name and an image. You can always change it later.
                     </DialogDescription>
                 </DialogHeader>
@@ -102,7 +100,7 @@ export const CreateServerModal = () => {
                                     render={({field})=>(
                                         <FormItem>
                                             <FormControl>
-                                                <FileUpload 
+                                                <FileUpload
                                                     endpoint="serverImage"
                                                     value={field.value}
                                                     onChange={field.onChange}
@@ -118,13 +116,13 @@ export const CreateServerModal = () => {
                                 name="name"
                                 render={({field})=>(
                                     <FormItem>
-                                        <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
+                                        <FormLabel className="uppercase text-xs font-bold dark:text-zinc-300 text-zinc-500">
                                             Server Name
                                         </FormLabel>
                                         <FormControl>
                                             <Input
                                                 disabled={isLoading}
-                                                className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
+                                                className="bg-zinc-200/90 dark:bg-zinc-800 border-0 focus-visible:ring-0 text-zinc-600 dark:text-zinc-200 focus-visible:ring-offset-0"
                                                 placeholder="Enter server name"
                                                 {...field}
                                             />
@@ -134,7 +132,7 @@ export const CreateServerModal = () => {
                                 )}
                             />
                         </div>
-                        <DialogFooter className="bg-gray-100 px-6 py-4">
+                        <DialogFooter className="bg-gray-100 dark:bg-zinc-700 px-6 py-4">
                             <Button variant="primary" disabled={isLoading}>
                                 Create
                             </Button>

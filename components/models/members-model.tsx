@@ -52,7 +52,7 @@ export const MembersModal = () => {
     const onKick = async (memberId: string) =>{
         try{
             setLoadingId(memberId);
-            console.log(memberId);
+            console.log(memberId); 
             /* const url = qs.stringifyUrl({
                 url: `/api/members/${memberId}`,
                 query:{

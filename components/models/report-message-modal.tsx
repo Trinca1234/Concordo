@@ -50,7 +50,7 @@ export const ReportMessageModal = () => {
 
     return (
         <Dialog open={isModalOpen} onOpenChange={handleOnClose}>
-            <DialogContent className="bg-white dark:bg-zinc-700 text-white p-0 overflow-hidden">
+            <DialogContent className="bg-white text-black dark:bg-zinc-700 dark:text-white p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
                         Report

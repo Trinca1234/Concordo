@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -97,11 +98,14 @@ export const AddFriendModal = () => {
 
     return (
         <Dialog open={isModalOpen} onOpenChange={handleClose}>
-            <DialogContent className="bg-white dark:bg-zinc-700 text-white p-0 overflow-hidden">
+            <DialogContent className="bg-white text-black dark:bg-zinc-700 dark:text-white p-0 overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
                         Add Friend
                     </DialogTitle>
+                    <DialogDescription className="text-center text-zinc-500 dark:text-white/60">
+                        Add a friend via email.
+                    </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -111,10 +115,10 @@ export const AddFriendModal = () => {
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="uppercase text-xs font-bold text-zinc-300">
+                                        <FormLabel className="uppercase text-xs font-bold dark:text-zinc-300 text-zinc-500">
                                             Email
                                         </FormLabel>
-                                        <FormControl>
+                                        <FormControl> 
                                             <Input
                                                 disabled={isLoading}
                                                 className="bg-zinc-200/90 dark:bg-zinc-800 border-0 focus-visible:ring-0 text-zinc-600 dark:text-zinc-200 focus-visible:ring-offset-0"

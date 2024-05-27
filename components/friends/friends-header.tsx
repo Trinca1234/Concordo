@@ -1,8 +1,7 @@
-"use client"
-import { Bell, ChevronDown, Hash, HelpCircle, Inbox, Settings, UserPlus } from "lucide-react";
+"use client";
+import { Bell, CatIcon, CheckIcon, ChevronDown, Hash, HelpCircle, Inbox, Settings, UserPlus, UserRound } from "lucide-react";
 import { UserAvatar } from "@/components/user-avatar";
 import { SocketIndicator } from "@/components/socket-indicator";
-import { UserRound } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
@@ -17,35 +16,35 @@ import { DropdownMenuLabel } from "../ui/dropdown-menu";
 import { DmMobileTogle } from "../mobile-toggle-dm";
 import { useFriendQuery } from "@/hooks/friends/use-friend-query";
 import { useFriendSocket } from "@/hooks/friends/use-friend-socket";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "../ui/command";
+import { cn } from "@/lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
 
 interface FriendsHeaderProp {
     profile: Profile;
 }
- 
 
-export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{ 
-    const queryKey = `friends:`;
-    const acceptedKey = `friends:${profile.id}:accepted`;
-    const deniedKey = `friends:${profile.id}:denied`;
-    const blockedKey = `friends:${profile.id}:blocked`;
-    const apiUrl = "/api/friends/getUsers";
-    const paramKey = "status";
-    const paramValue = "ACCEPTED";
+const Path = [
+    {
+        value: "all",
+        label: "All Friends",
+    },
+    {
+        value: "pending",
+        label: "Pending Friends",
+    },
+    {
+        value: "blocked",
+        label: "Blocked Friends",
+    },
+]
 
-    const { 
-        data,
-        status 
-    } = useFriendQuery({
-        queryKey,
-        apiUrl,
-        paramKey,
-        paramValue
-    });
-    useFriendSocket({ queryKey, deniedKey, acceptedKey, blockedKey});
+export const FriendsHeader = ({ profile }: FriendsHeaderProp) => { 
+    const [value, setValue] = useState("");
+    const [open, setOpen] = useState(false);
 
-
-    const {onOpen} = useModal();
-
+    const { onOpen } = useModal();
     const router = useRouter();
 
     const onClickButton = (route: string) => {
@@ -56,10 +55,16 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
         router.push(`${route}`);
     }
 
+    useEffect(() => {
+        if (value) {
+            router.push(`/dms/friends/${value}`);
+        }
+    }, [value, router]);
+
     return (
         <div className="text-md font-semibold px-3 flex items-center h-12 border-neutral-200 dark:border-neutral-800 border-b-2">
             <DmMobileTogle profileId={profile.id} />
-            <div className=" hidden md:flex h-8 w-8 mr-2 mt-1">
+            <div className="hidden md:flex h-8 w-8 mr-2 mt-1">
                 <UserRound />
             </div>
             <p className="font-semibold text-md text-black dark:text-white">
@@ -74,7 +79,7 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
             />
             <button
                 onClick={() => onClickButton('all')}
-                className={" hidden md:flex group px-2 py-2 mx-5 rounded-mbitems-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1 "}
+                className={"hidden md:flex group px-2 py-2 mx-5 rounded-mb items-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1"}
             >
                 <p className={"font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition"}>
                     All
@@ -82,7 +87,7 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
             </button>
             <button
                 onClick={() => onClickButton('pending')}
-                className={" hidden md:flex group px-2 py-2 mx-5 rounded-mb items-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1 "}
+                className={"hidden md:flex group px-2 py-2 mx-5 rounded-mb items-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1"}
             >
                 <p className={"font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition"}>
                     Pending
@@ -90,22 +95,55 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
             </button>
             <button
                 onClick={() => onClickButton('blocked')}
-                className={" hidden md:flex group px-2 py-2 mx-5 rounded-mb items-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1 "}
+                className={"hidden md:flex group px-2 py-2 mx-5 rounded-mb items-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1"}
             >
                 <p className={"font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition"}>
                     Blocked
                 </p>
             </button>
             <button
-                onClick={() => onOpen("addFriend", {
-                    ids: profile.id
-                })}
-                className={"group px-2 py-2 md:mx-5 rounded-mb flex items-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1 "}
+                onClick={() => onOpen("addFriend", { ids: profile.id })}
+                className={"group px-2 py-2 md:mx-5 rounded-mb flex items-center gap-x-2 w-auto hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition mb-1"}
             >
                 <p className={"font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition"}>
                     Add Friend
                 </p>
             </button>
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <Button
+                        aria-expanded={open}
+                        className="w-auto justify-between bg-transparent hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"
+                    >
+                        <ChevronDown className="font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition" />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                        <CommandGroup>
+                            {Path.map((Path) => (
+                                <CommandItem
+                                    key={Path.value}
+                                    value={Path.value}
+                                    onSelect={(currentValue) => {
+                                        setValue(currentValue === value ? "" : currentValue)
+                                        setOpen(false)
+                                    }}
+                                >
+                                    {Path.label}
+                                    <CheckIcon
+                                        className={cn(
+                                            "ml-auto h-4 w-4",
+                                            value === Path.value ? "opacity-100" : "opacity-0"
+                                        )}
+                                    />
+                                </CommandItem>
+                            ))}
+                        </CommandGroup>
+                    </Command>
+                </PopoverContent>
+            </Popover>
+            
             <div className="ml-auto flex items-center">
                 <Separator
                     className="h-8 bg-zinc-300 dark:bg-zinc-700"
@@ -115,13 +153,8 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
                     color=""
                 />
                 <DropdownMenu>
-                    <DropdownMenuTrigger
-                    className="focus:outline-none"
-                    asChild
-                    >
-                        <button
-                        className="w-full text-md font-semibold px-3 flex items-center h-12  hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"
-                        >
+                    <DropdownMenuTrigger className="focus:outline-none" asChild>
+                        <button className="w-full text-md font-semibold px-3 flex items-center h-12 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition">
                             {/* {notifications.length > 0 ? (
                                 <div className="relative">
                                     <Bell className="mx-2"/>
@@ -133,40 +166,34 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) =>{
                         </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
-                    style={{ zIndex: 900 }}
-                    className="w-56 mr-12 text-xs font-medium text-black dark:text-neutral-400 space-y-[2px] bg-zinc-700 dark:bg-zinc-900"
+                        style={{ zIndex: 900 }}
+                        className="w-56 mr-12 text-xs font-medium text-black dark:text-neutral-400 space-y-[2px] bg-zinc-700 dark:bg-zinc-900"
                     >
-                            {/* {notifications.length > 0 ? (
-                                <>
-                                    <DropdownMenuLabel>Pending requests</DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem
-                                        className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm"
-                                    >
-                                        <div className="mb-2">
-                                            <div className="space-y-[2px} ">
-                                                {notifications.map(user => (
-                                                    <div key={user.id} className="border-t border-zinc-200 dark:border-zinc-700">
-                                                        <DmsUser profile={user} type={"Pending3"}/>
-                                                    </div>
-                                                ))}
-                                            </div>
+                        {/* {notifications.length > 0 ? (
+                            <>
+                                <DropdownMenuLabel>Pending requests</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm">
+                                    <div className="mb-2">
+                                        <div className="space-y-[2px} ">
+                                            {notifications.map(user => (
+                                                <div key={user.id} className="border-t border-zinc-200 dark:border-zinc-700">
+                                                    <DmsUser profile={user} type={"Pending3"}/>
+                                                </div>
+                                            ))}
                                         </div>
-                                    </DropdownMenuItem>
-                                </>
-                            ) : (
-                                <DropdownMenuItem
-                                    className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm cursor-pointer"
-                                >
-                                    <span>No notifications</span>
+                                    </div>
                                 </DropdownMenuItem>
-                            )} */}
+                            </>
+                        ) : (
+                            <DropdownMenuItem className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm cursor-pointer">
+                                <span>No notifications</span>
+                            </DropdownMenuItem>
+                        )} */}
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <button
-                    onClick={() => onClickHelpButton('https://www.radix-ui.com/primitives/docs/components/separator#separator')}
-                >
-                    <HelpCircle className=" mx-3 " />
+                <button onClick={() => onClickHelpButton('https://www.radix-ui.com/primitives/docs/components/separator#separator')}>
+                    <HelpCircle className="mx-3" />
                 </button>
             </div>
         </div>

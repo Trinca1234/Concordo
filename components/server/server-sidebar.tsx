@@ -120,7 +120,7 @@ export const ServerSidebar = ({
                             {
                                 label: "Text Channels",
                                 type: "channel",
-                                data: textChannels?.map((channel)=>({
+                                data: textChannels?.map((channel)=>({ 
                                     id: channel.id,
                                     name: channel.name,
                                     icon: iconMap[channel.type],
