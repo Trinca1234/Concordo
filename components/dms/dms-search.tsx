@@ -31,7 +31,7 @@ export const DmsSearch = ({
         <>
         <button  
         onClick={()=>setOpen(true)}
-        className="group px-2 py-4 rounded-md flex items-center gap-x-2 w-full bg-zinc-800 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition">
+        className="group px-2 py-4 rounded-md flex items-center gap-x-2 w-full bg-zinc-700/10 dark:bg-zinc-800 hover:bg-zinc-700/20 dark:hover:bg-zinc-700/50 transition">
             <p className="font-semibold text-sm text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition">
                 Search
             </p>

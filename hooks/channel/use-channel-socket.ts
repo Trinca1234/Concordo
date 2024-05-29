@@ -1,6 +1,7 @@
 import { useSocket } from "@/components/providers/socket-provider"
 import { ChannelType, MemberRole } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 interface Member {
@@ -55,6 +56,7 @@ export const useChannelSocket = ({
 }: ChannelSocketProps) =>{
     const { socket } = useSocket();
     const queryClient = useQueryClient();
+    const router = useRouter();
 
     useEffect(()=>{
         if(!socket){
@@ -64,6 +66,7 @@ export const useChannelSocket = ({
         socket.on(updateKey, (server: Server) => {
             console.log(`Received update for server ${server.id}`);
             queryClient.setQueryData([queryKey], (oldData: any) =>{
+                router.refresh();
                 return{
                     ...oldData,
                     pages:{
@@ -72,25 +75,6 @@ export const useChannelSocket = ({
                 }
             })
         });
-
-        /* socket.on(addKey, (server: Server)=>{
-            console.log('Received updated server:', server);
-            queryClient.setQueryData([queryKey], (oldData: any)=>{
-                if(!oldData || !oldData.pages || oldData.pages.length === 0){
-                    return{
-                        pages:[[server],]
-                    }
-                }
-                const newData = [...oldData.pages];
-
-                newData[0].push(server);
-
-                return {
-                    ...oldData,
-                    pages: newData,
-                };
-            });
-        }); */
 
         return() =>{
             socket.off(updateKey);

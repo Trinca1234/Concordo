@@ -8,11 +8,12 @@ export const getOrCreateFriendship = async (friendOneId: string, friendTwoEmail:
             query: {
                 email: friendTwoEmail 
             } 
-        });
+        }); 
 
         const response = await axios.get(url);
         
         if(response.status == 200){
+            console.log(friendOneId, response.data);
             let friendship = await findFriendship(friendOneId, response.data.id);
 
             if(friendship && friendship  != "User blocked" && friendship  != "Hes already your friend" && friendship  != "Non existent friendship" && friendship  != "Already sent friend request" ){
@@ -81,7 +82,11 @@ const createNewFriendship = async (friendTwoId: string) =>{
             }
         });
 
+        console.log("antes de post");
+
         const response = await axios.post(url);
+
+        console.log(response);
 
         if(response.status === 200){
             const url =  qs.stringifyUrl({

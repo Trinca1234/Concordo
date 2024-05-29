@@ -24,49 +24,14 @@ export default async function handler(
             return res.status(400).json({error: "Friend two missing"});
         }
 
-        const friendship = await db.friends.findFirst({
-            where: {
-                OR: [
-                    {
-                        friendOneId: profile.id,
-                        friendTwoId: friendTwoId.toString()
-                    },
-                    {
-                        friendOneId: friendTwoId.toString(),
-                        friendTwoId: profile.id
-                    }
-                ]
-            }
-        });
-
-        if(!friendship){
-            await db.friends.create({
-                data:{
-                    friendOneId: profile.id,
-                    friendTwoId: friendTwoId.toString(),
-                    status: "PENDING",
-                    senderId: profile.id
-                }
-            })
-        }
-
-
-        const friendtwo = await db.profile.findFirst({
-            where: {
-                id: friendTwoId.toString()
-            },
-            select:{
-                id: true,
-                name: true,
-                imageUrl: true
+        const friendship = await db.friends.create({
+            data:{
+                friendOneId: profile.id,
+                friendTwoId: friendTwoId.toString(),
+                status: "PENDING",
+                senderId: profile.id
             }
         })
-
-        if(status === "PENDING"){
-            const pendingKey = `friends:${profile.id}:pending`;
-
-            res?.socket?.server?.io?.emit(pendingKey, friendtwo);
-        }
 
         return res.status(200).json(friendship);
     }catch(error){

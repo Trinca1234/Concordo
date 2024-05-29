@@ -41,6 +41,22 @@ const Path = [
 ]
 
 export const FriendsHeader = ({ profile }: FriendsHeaderProp) => { 
+    const queryKey = `notifications:`;
+    const addKey = `notifications:${profile.id}:add`;
+    const deleteKey = `notifications:${profile.id}:delete`;
+    const apiUrl = "/api/notifications/getNotifications";
+
+    /* const {
+        data,
+        status
+    } = useFriendQuery({
+        queryKey,
+        apiUrl,
+    })
+    useFriendSocket({ queryKey, addKey, deleteKey}) */
+
+
+
     const [value, setValue] = useState("");
     const [open, setOpen] = useState(false);
 
@@ -49,10 +65,6 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) => {
 
     const onClickButton = (route: string) => {
         router.push(`/dms/friends/${route}`);
-    }
-
-    const onClickHelpButton = (route: string) => {
-        router.push(`${route}`);
     }
 
     useEffect(() => {
@@ -113,7 +125,7 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) => {
                 <PopoverTrigger asChild>
                     <Button
                         aria-expanded={open}
-                        className="w-auto justify-between bg-transparent hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"
+                        className="w-auto md:hidden justify-between bg-transparent hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"
                     >
                         <ChevronDown className="font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition" />
                     </Button>
@@ -169,14 +181,14 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) => {
                         style={{ zIndex: 900 }}
                         className="w-56 mr-12 text-xs font-medium text-black dark:text-neutral-400 space-y-[2px] bg-zinc-700 dark:bg-zinc-900"
                     >
-                        {/* {notifications.length > 0 ? (
+                        {/* {data?.pages.length > 0 ? (
                             <>
                                 <DropdownMenuLabel>Pending requests</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm">
                                     <div className="mb-2">
                                         <div className="space-y-[2px} ">
-                                            {notifications.map(user => (
+                                            {data?.pages.map(user => (
                                                 <div key={user.id} className="border-t border-zinc-200 dark:border-zinc-700">
                                                     <DmsUser profile={user} type={"Pending3"}/>
                                                 </div>
@@ -192,9 +204,6 @@ export const FriendsHeader = ({ profile }: FriendsHeaderProp) => {
                         )} */}
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <button onClick={() => onClickHelpButton('https://www.radix-ui.com/primitives/docs/components/separator#separator')}>
-                    <HelpCircle className="mx-3" />
-                </button>
             </div>
         </div>
     )

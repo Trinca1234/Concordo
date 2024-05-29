@@ -70,7 +70,7 @@ export const AddFriendModal = () => {
     }
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        try {
+        try { 
             const friendship = await getOrCreateFriendship(ids, values.email, ids);
 
             if (friendship instanceof AxiosError) {

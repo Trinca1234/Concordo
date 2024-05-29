@@ -53,8 +53,8 @@ export const MembersModal = () => {
         try{
             setLoadingId(memberId);
             console.log(memberId); 
-            /* const url = qs.stringifyUrl({
-                url: `/api/members/${memberId}`,
+            const url = qs.stringifyUrl({
+                url: `/api/members/${memberId}/softDelete`,
                 query:{
                     serverId: server?.id,
                 },
@@ -62,7 +62,9 @@ export const MembersModal = () => {
  
             const response = await axios.delete(url);
 
-            router.refresh(); */
+            console.log(response);
+
+            router.refresh();
             /* onOpen("members", { server: response.data }); */
 
         }catch (error) {
@@ -95,7 +97,7 @@ export const MembersModal = () => {
 
     return (
         <Dialog open={isModalOpen} onOpenChange={onClose}>
-            <DialogContent className="bg-white text-black  overflow-hidden">
+            <DialogContent className="bg-white text-black dark:bg-zinc-700 dark:text-white overflow-hidden">
                 <DialogHeader className="pt-8 px-6">
                     <DialogTitle className="text-2xl text-center font-bold">
                         Manage Members

@@ -118,7 +118,7 @@ export const DmsSidebar = ({
                     },
                 ]}
             />
-            <ScrollArea className="flex px-3 mb-2">
+            <ScrollArea className="flex px-3 mb-2"> 
                 <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2"/>
                 <SocketIndicator/>
                     <div className="mb-2">
